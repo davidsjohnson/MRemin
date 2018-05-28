@@ -4,11 +4,13 @@ using System.Text;
 using System;
 using Sanford.Multimedia.Midi;
 
-public class PlayerCtrl : MonoBehaviour {
-
-    // Name of file containing Midi data
+public class PlayerCtrl : MonoBehaviour
+{
     //TODO: Add a UI element for this when launching program
-    public string midiScoreResource;
+    public string midiScoreResource;        // Name of file containing Midi data
+
+
+    public int participantID = 0;
 
     // Name of Midi Device to connect to
     public string midiInputDeviceName;
@@ -22,6 +24,7 @@ public class PlayerCtrl : MonoBehaviour {
         }
     }
 
+    public LogWriter Logger { get; private set; }
 
     void Awake () {
 
@@ -33,6 +36,8 @@ public class PlayerCtrl : MonoBehaviour {
         
         //Start Up the Midi Controllers
         midiIn = new MidiInputCtrl(midiInputDeviceName);
+
+        Logger = new LogWriter(string.Format("p{0}-midi-logger", participantID));
     }
 
     void Start()

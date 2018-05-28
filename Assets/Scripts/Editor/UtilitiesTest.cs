@@ -59,4 +59,45 @@ public class UtilitiesTest {
         expectedOutput = 1;
         Assert.AreEqual(expectedOutput, Utilities.MapValue(ogValue, srcMin, srcMax, dstMin, dstMax), "Incorrect Mapping");
     }
+
+    [Test]
+    public void Midi2NoteStrIsCorrect()
+    {
+        int midiNote = 69;  // A4
+        string expectedStr = "A<size=36>4</size>";
+        string result = Utilities.Midi2NoteStr(midiNote);
+        Assert.AreEqual(expectedStr, result, "Note Str result is incorrect");
+
+        midiNote = 0;  // C-1
+        expectedStr = "C<size=36>-1</size>";
+        result = Utilities.Midi2NoteStr(midiNote);
+        Assert.AreEqual(expectedStr, result, "Note Str result is incorrect");
+
+        midiNote = 127;  // G9
+        expectedStr = "G<size=36>9</size>";
+        result = Utilities.Midi2NoteStr(midiNote);
+        Assert.AreEqual(expectedStr, result, "Note Str result is incorrect");
+    }
+
+    [Test]
+    public void TestAngle()
+    {
+        Vector2 v1 = new Vector2(-2, -1);
+        Vector2 v2 = new Vector2(1, -2);
+
+        float angle = Vector2.SignedAngle(v2 - v1, Vector2.right);
+
+        float xDelta = Mathf.Sin(Mathf.Deg2Rad * angle) * .5f;
+        float yDelta = Mathf.Cos(Mathf.Deg2Rad * angle) * .5f;
+
+        Assert.AreEqual(45.0f, yDelta);
+
+    }
+
+    [Test]
+    public void ListMidiDevices()
+    {
+        UnityEngine.Debug.unityLogger.logEnabled = true;
+        MidiInputCtrl.ListMidiDevices();
+    }
 }

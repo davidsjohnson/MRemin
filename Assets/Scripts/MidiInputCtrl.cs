@@ -31,6 +31,7 @@ public class MidiInputCtrl : IPublisher<ChannelMessage>
 
                     // Register Callback for Channel Messages (should be all we need to handle)
                     midiInput.ChannelMessageReceived += HandleChannelMessageReceived;
+                    break;
                 }
                 catch(Exception ex)
                 {
@@ -52,6 +53,15 @@ public class MidiInputCtrl : IPublisher<ChannelMessage>
         midiInput.Close();
     }
 
+    public static void ListMidiDevices()
+    {
+        UnityEngine.Debug.Log("Listing Midi Devices:");
+        for (int i = 0; i < InputDevice.DeviceCount; i++)
+        {
+            MidiInCaps deviceCaps = InputDevice.GetDeviceCapabilities(i);
+            UnityEngine.Debug.Log(string.Format("Midi Device {0}: {1}", i, deviceCaps.name));
+        }
+    }
 
     public void Start()
     {
@@ -79,7 +89,7 @@ public class MidiInputCtrl : IPublisher<ChannelMessage>
     void HandleChannelMessageReceived(object sender, ChannelMessageEventArgs e)
     {
         ChannelMessage m = e.Message;
-        UnityEngine.Debug.Log(string.Format("Message Recieved -  Data1={0} : Data2={1}", m.Data1, m.Data2));
+        //UnityEngine.Debug.Log(string.Format("Message Recieved -  Data1={0} : Data2={1}", m.Data1, m.Data2));
         SendNotifications(m);
     }
 

@@ -37,7 +37,7 @@ public class PlayNote : MonoBehaviour, ISubscriber<int> {
      */
     public void Notify(int midiNote)
     {
-        NextNote(midiNote);
+        //NextNote(midiNote);
     }
 
 

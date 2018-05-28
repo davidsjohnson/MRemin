@@ -5,14 +5,16 @@ using Sanford.Multimedia.Midi;
 
 public class RightHandCtrl : MonoBehaviour, ISubscriber<ChannelMessage> {
 
+    public PlayerCtrl playerCtrl;
+
     public float minPosition;
     public float maxPosition;
 
     public int pitchChannel = 20;
 
-    private MidiInputCtrl midiIn;
     private int minMidiVal = 0;
     private int maxMidiVal = 127;
+
 
 	// Use this for initialization
 	void Start ()
@@ -21,13 +23,12 @@ public class RightHandCtrl : MonoBehaviour, ISubscriber<ChannelMessage> {
         Animator rhAnimator = GetComponent<Animator>();
         rhAnimator.SetTrigger(Animator.StringToHash("OK"));
 
-        midiIn = GetComponentInParent<PlayerCtrl>().MidiIn;
-        midiIn.Subscribe(this);
+        playerCtrl.MidiIn.Subscribe(this);
 	}
 
     void onDisable()
     {
-        midiIn.Unsubscribe(this);
+        playerCtrl.MidiIn.Unsubscribe(this);
     }
 
 
@@ -35,11 +36,12 @@ public class RightHandCtrl : MonoBehaviour, ISubscriber<ChannelMessage> {
     {
         int channel = message.Data1;
         int value = message.Data2;
+        int ts = message.Timestamp;
 
         if (channel == pitchChannel)
         {
-            UnityEngine.Debug.Log(string.Format("Pitch: {0}", value));
-            UnityEngine.Debug.Log(string.Format("Volume: {0}", value));
+            //UnityEngine.Debug.Log(string.Format("Pitch: {0}", value));
+            //UnityEngine.Debug.Log(string.Format("Volume: {0}", value));
             // Calc new position value from Midi data
             float newPosition = Utilities.MapValue(value, maxMidiVal, minMidiVal, minPosition, maxPosition);
 
@@ -47,6 +49,8 @@ public class RightHandCtrl : MonoBehaviour, ISubscriber<ChannelMessage> {
             Vector3 tmp = transform.localPosition;
             tmp.x = newPosition;
             transform.localPosition = tmp;
+
+            playerCtrl.Logger.Log("{0}\t{1}\t{2}", channel, value, ts);
         }
     }
 }

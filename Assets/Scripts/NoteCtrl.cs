@@ -148,7 +148,7 @@ public class NoteCtrl : IPublisher<int>
 
     public void SendNotifications(int midiNote)
     {
-        UnityEngine.Debug.Log(string.Format("Sending Notifications for Note: {0}", midiNote));
+        // UnityEngine.Debug.Log(string.Format("Sending Notifications for Note: {0}", midiNote));
         foreach (var s in subscribers)
         {
             s.Notify(CurrentNote);
