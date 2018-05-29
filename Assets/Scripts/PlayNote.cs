@@ -52,6 +52,8 @@ public class PlayNote : MonoBehaviour, ISubscriber<int> {
         // Calculate min and max frequencies of the Theremin (based on max and min midi notes)
         minFreq = Utilities.Midi2Freq(minNote);
         maxFreq = Utilities.Midi2Freq(maxNote);
+
+        NextNote(63);
     }
 
 	void OnTriggerEnter(Collider other)
@@ -102,7 +104,8 @@ public class PlayNote : MonoBehaviour, ISubscriber<int> {
     Vector3 CalculateNoteScale(int midiNote)
     {
         float freq = Utilities.Midi2Freq(midiNote);
-        float newXZ = Utilities.MapValue(freq, maxFreq, minFreq, minSize, maxSize);
+        //float newXZ = Utilities.MapValue(freq, maxFreq, minFreq, minSize, maxSize);
+        float newXZ = Utilities.MapValue(midiNote, maxNote, minNote, minSize, maxSize);
         return new Vector3(newXZ, 0.1f, newXZ);
     }
 }

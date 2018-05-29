@@ -44,11 +44,14 @@ public class PlayerCtrl : MonoBehaviour
     {
         NoteCtrl.GetInstance().PlayMidi(MidiStatus.Play);
         midiIn.Start();
+
+        Logger.Start();
     }
 
     void OnDisable()
     {
         midiIn.StopAndClose();
+        Logger.Stop();
     }
 
 

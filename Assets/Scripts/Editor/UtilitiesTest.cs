@@ -100,4 +100,14 @@ public class UtilitiesTest {
         UnityEngine.Debug.unityLogger.logEnabled = true;
         MidiInputCtrl.ListMidiDevices();
     }
+
+    [Test]
+    public void ValidateHandPosition()
+    {
+        float midiNote = Utilities.MapValue(1, 0, 127, 36, 71);
+
+        Debug.Log("Midi Note: " + midiNote);
+
+        Assert.AreEqual(50, midiNote);
+    }
 }
