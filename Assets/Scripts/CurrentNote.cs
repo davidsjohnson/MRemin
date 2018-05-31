@@ -13,8 +13,14 @@ public class CurrentNote : MonoBehaviour, ISubscriber<int> {
     public void Notify(int midiNote)
     {
         //Update the Note string whenever a new midi note is received
-        
         currentNote  = midiNote;
+
+    }
+
+    public void Notify(string midiNote)
+    {
+        //Update the Note string whenever a new midi note is received
+        int.TryParse(midiNote, out currentNote);
 
     }
 

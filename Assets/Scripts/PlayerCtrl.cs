@@ -6,14 +6,15 @@ using Sanford.Multimedia.Midi;
 
 public class PlayerCtrl : MonoBehaviour
 {
-    //TODO: Add a UI element for this when launching program
+    public string midiInputDeviceName;      // Name of Midi Device to connect to
     public string midiScoreResource;        // Name of file containing Midi data
 
+    public bool noteCtrlOn = true;
+    
 
     public int participantID = 0;
 
-    // Name of Midi Device to connect to
-    public string midiInputDeviceName;
+    
 
     private MidiInputCtrl midiIn;
     public MidiInputCtrl MidiIn
@@ -42,9 +43,9 @@ public class PlayerCtrl : MonoBehaviour
 
     void Start()
     {
-        NoteCtrl.GetInstance().PlayMidi(MidiStatus.Play);
-        midiIn.Start();
+        if (noteCtrlOn) NoteCtrl.GetInstance().PlayMidi(MidiStatus.Play);
 
+        midiIn.Start();
         Logger.Start();
     }
 

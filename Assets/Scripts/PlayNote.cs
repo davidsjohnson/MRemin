@@ -37,7 +37,14 @@ public class PlayNote : MonoBehaviour, ISubscriber<int> {
      */
     public void Notify(int midiNote)
     {
-        //NextNote(midiNote);
+        NextNote(midiNote);
+    }
+
+    public void Notify(string midiNote)
+    {
+        int temp = 0;
+        int.TryParse(midiNote, out temp);
+        Notify(temp);
     }
 
 
@@ -104,8 +111,8 @@ public class PlayNote : MonoBehaviour, ISubscriber<int> {
     Vector3 CalculateNoteScale(int midiNote)
     {
         float freq = Utilities.Midi2Freq(midiNote);
-        //float newXZ = Utilities.MapValue(freq, maxFreq, minFreq, minSize, maxSize);
-        float newXZ = Utilities.MapValue(midiNote, maxNote, minNote, minSize, maxSize);
+        float newXZ = Utilities.MapValue(freq, maxFreq, minFreq, minSize, maxSize);
+        //float newXZ = Utilities.MapValue(midiNote, maxNote, minNote, minSize, maxSize);
         return new Vector3(newXZ, 0.1f, newXZ);
     }
 }
