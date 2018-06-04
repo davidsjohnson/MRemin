@@ -9,8 +9,8 @@ public class LoggerTest {
 
 	[Test]
 	public void TestLogWriterCreation() {
-        LogWriter logger = new LogWriter("TestLog");
-        logger.Start();
+        LogWriter logger = new LogWriter();
+        logger.Start("TestLog");
         logger.Stop();
 
         Assert.IsTrue(Path.Combine("Logs", "TestLog.log").Equals(logger.FilePath), string.Format("Actual Filepath is {0}", logger.FilePath));
@@ -29,8 +29,8 @@ public class LoggerTest {
         string filepath = Path.Combine("Logs", string.Format("{0}.log", filename));
         File.Delete(filepath);
 
-        LogWriter logger = new LogWriter(filename);
-        logger.Start();
+        LogWriter logger = new LogWriter();
+        logger.Start(filename);
 
         logger.Log("This is a test log entry");
         for (int i = 0; i < 10; i++)

@@ -278,7 +278,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: -18, y: 0}
+  m_SizeDelta: {x: -17, y: 0}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &82601360
 MonoBehaviour:
@@ -769,10 +769,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d7c26520b2dd38b449894e6b873a1da2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  midiScoreResource: Assets/Resources/score_NIME.bytes
   noteCtrlOn: 1
-  participantID: 99
-  midiInputDeviceName: Moog Theremini
 --- !u!1001 &213081147
 Prefab:
   m_ObjectHideFlags: 0
@@ -984,7 +981,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: Option A
+  m_Text: Select Score...
 --- !u!222 &263682107
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -1302,7 +1299,18 @@ MonoBehaviour:
   m_CharacterLimit: 0
   m_OnEndEdit:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 188809724}
+        m_MethodName: set_ParticipantID
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
     m_TypeName: UnityEngine.UI.InputField+SubmitEvent, UnityEngine.UI, Version=1.0.0.0,
       Culture=neutral, PublicKeyToken=null
   m_OnValueChanged:
@@ -2200,6 +2208,7 @@ GameObject:
   - component: {fileID: 709315134}
   - component: {fileID: 709315133}
   - component: {fileID: 709315132}
+  - component: {fileID: 709315135}
   m_Layer: 5
   m_Name: MIDI Input Device
   m_TagString: Untagged
@@ -2273,11 +2282,7 @@ MonoBehaviour:
   m_Value: 0
   m_Options:
     m_Options:
-    - m_Text: Option A
-      m_Image: {fileID: 0}
-    - m_Text: Option B
-      m_Image: {fileID: 0}
-    - m_Text: Option C
+    - m_Text: Select Device...
       m_Image: {fileID: 0}
   m_OnValueChanged:
     m_PersistentCalls:
@@ -2317,6 +2322,18 @@ CanvasRenderer:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 709315130}
+--- !u!114 &709315135
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 709315130}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1186faf5082d5a74dabddb5be0c690a5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  playerCtrl: {fileID: 188809724}
 --- !u!1 &765895693
 GameObject:
   m_ObjectHideFlags: 0
@@ -2764,7 +2781,7 @@ RectTransform:
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 1, y: 0.2}
+  m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 20, y: 20}
   m_Pivot: {x: 0.5, y: 0.5}
@@ -3947,6 +3964,7 @@ GameObject:
   - component: {fileID: 1472569179}
   - component: {fileID: 1472569178}
   - component: {fileID: 1472569177}
+  - component: {fileID: 1472569180}
   m_Layer: 5
   m_Name: Start Button
   m_TagString: Untagged
@@ -4047,6 +4065,19 @@ CanvasRenderer:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1472569175}
+--- !u!114 &1472569180
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1472569175}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b3744ce7dbc85e44e899e7a3cc5e7824, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  playerCtrl: {fileID: 188809724}
+  parentCanvas: {fileID: 1537143015}
 --- !u!1 &1537143015
 GameObject:
   m_ObjectHideFlags: 0
@@ -4266,7 +4297,7 @@ MonoBehaviour:
   m_HandleRect: {fileID: 941550040}
   m_Direction: 2
   m_Value: 0
-  m_Size: 0.2
+  m_Size: 1
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -4427,6 +4458,7 @@ GameObject:
   - component: {fileID: 1754315865}
   - component: {fileID: 1754315864}
   - component: {fileID: 1754315863}
+  - component: {fileID: 1754315866}
   m_Layer: 5
   m_Name: Exercise Score
   m_TagString: Untagged
@@ -4500,11 +4532,7 @@ MonoBehaviour:
   m_Value: 0
   m_Options:
     m_Options:
-    - m_Text: Option A
-      m_Image: {fileID: 0}
-    - m_Text: Option B
-      m_Image: {fileID: 0}
-    - m_Text: Option C
+    - m_Text: Select Score...
       m_Image: {fileID: 0}
   m_OnValueChanged:
     m_PersistentCalls:
@@ -4544,6 +4572,18 @@ CanvasRenderer:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1754315861}
+--- !u!114 &1754315866
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1754315861}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: da63641e90db55c438e1f978a3d75f6f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  playerCtrl: {fileID: 188809724}
 --- !u!1 &1810672239
 GameObject:
   m_ObjectHideFlags: 0
@@ -4708,7 +4748,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: Option A
+  m_Text: Select Device...
 --- !u!222 &1875776900
 CanvasRenderer:
   m_ObjectHideFlags: 0

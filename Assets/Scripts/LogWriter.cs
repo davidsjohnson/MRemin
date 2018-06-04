@@ -39,11 +39,15 @@ public class LogWriter
     private bool isRunning = false;
     private Thread thread;
 
-    public LogWriter(string filename=null)
+    public LogWriter()
     {
         id++;
+    }
 
-        string name = string.IsNullOrEmpty(filename) ? string.Format("logger_{0}-{1}.log", id, DateTime.Now.ToString("s")).Replace(":", "") : FilePath = string.Format("{0}.log", filename);
+    private void SetLogFile(string filename)
+    {
+        string name = string.IsNullOrEmpty(filename) ? string.Format("logger_{0}-{1}.log", id, DateTime.Now.ToString("s")).Replace(":", "") : 
+                                                       string.Format("{0}.log", filename);
         FilePath = Path.Combine(baseFolder, name);
     }
     
@@ -80,24 +84,35 @@ public class LogWriter
         }
     }
 
-    public void Start()
+    public void Start(string filename=null)
     {
-        lock (lockObj)
+        SetLogFile(filename);
+        if (!string.IsNullOrEmpty(FilePath))
         {
-            isRunning = true;
+            lock (lockObj)
+            {
+                isRunning = true;
+            }
+            thread = new Thread(Run);
+            thread.Start();
         }
-        thread = new Thread(Run);
-        thread.Start();
+        else
+        {
+            throw new System.ArgumentException("File path for log has not been set");
+        }
     }
 
     public void Stop()
     {
-        lock (lockObj)
+        if (isRunning)
         {
-            isRunning = false;
+            lock (lockObj)
+            {
+                isRunning = false;
+            }
+            thread.Join();
+            thread = null;
         }
-        thread.Join();
-        thread = null;
     }
 
     public bool Log(string message)

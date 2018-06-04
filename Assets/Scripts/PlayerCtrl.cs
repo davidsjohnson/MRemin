@@ -5,56 +5,55 @@ using System;
 using Sanford.Multimedia.Midi;
 
 public class PlayerCtrl : MonoBehaviour
-{
-    public string midiInputDeviceName;      // Name of Midi Device to connect to
-    public string midiScoreResource;        // Name of file containing Midi data
-
+{        
+    // Leaving for now. TODO: remove this at some point?
     public bool noteCtrlOn = true;
-    
-
-    public int participantID = 0;
-
-    
-
-    private MidiInputCtrl midiIn;
-    public MidiInputCtrl MidiIn
-    {
-        get
-        {
-            return midiIn;
-        }
-    }
+   
+    public string ParticipantID { get; set; }           // Participant ID
+    public string MidiScoreResource { get; set; }       // Name of file containing Midi data
+    public string MidiInputDeviceName { get; set; }     // Name of Midi Device to connect to
 
     public LogWriter Logger { get; private set; }
+    public MidiInputCtrl MidiIn { get; private set; }   // Main Midi Input Controller used to position left and right hands
 
-    void Awake () {
+    private NoteCtrl noteCtrl;
 
-        //Start up the Note Controller
-        //And start playing the midi notes
-        NoteCtrl noteCtrl = NoteCtrl.GetInstance();
+    void Awake ()
+    {
+        // Initialize the Note Controller
+        noteCtrl = NoteCtrl.GetInstance();
         noteCtrl.Player = this;
-        noteCtrl.MidiScore = midiScoreResource;
-        
-        //Start Up the Midi Controllers
-        midiIn = new MidiInputCtrl(midiInputDeviceName);
 
-        Logger = new LogWriter(string.Format("p{0}-midi-logger", participantID));
+        //Initialize Midi In (so objects can subscribe to it upon load)
+        MidiIn = new MidiInputCtrl();
+
+        //Initialize Logger
+        Logger = new LogWriter();
     }
 
-    void Start()
+    public bool StartVRMin()
     {
-        if (noteCtrlOn) NoteCtrl.GetInstance().PlayMidi(MidiStatus.Play);
+        // Start Up the Logger
+        Logger.Start(string.Format("p{0}-midi-logger", ParticipantID));
 
-        midiIn.Start();
-        Logger.Start();
+        //Start Up the Midi Controllers
+        MidiIn.Connect(MidiInputDeviceName);
+        MidiIn.Start();
+
+        // Start Playing
+        noteCtrl.MidiScore = MidiScoreResource;
+        noteCtrl.PlayMidi(MidiStatus.Play);
+
+        return true;
     }
 
     void OnDisable()
     {
-        midiIn.StopAndClose();
-        Logger.Stop();
+        if(MidiIn != null)
+            MidiIn.StopAndClose();
+        if (Logger != null)
+            Logger.Stop();
     }
-
 
     public void StartChildCoroutine(IEnumerator coroutineMethod)
     {

@@ -1,6 +1,9 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
+using System.IO;
+using System.Runtime.Serialization.Formatters.Binary;
 
 public class Positioning : MonoBehaviour {
 
@@ -8,23 +11,9 @@ public class Positioning : MonoBehaviour {
 
     private bool positionSet = false;
 
-	// Use this for initialization
-	void Start () {
-
-
-    }
-	
-	// Update is called once per frame
-	void Update ()
+    public void Awake()
     {
-
-        // Addding Here for now since I'm not sure when exactly controllers are initialized and doesn't work in Awake or Start
-        // Will eventually add a UI element to control this
-        //if (!positionSet)
-        //{
-        //    positionSet = PositionTheremin();
-        //}
-
+        LoadPositionState();
     }
 
 
@@ -64,6 +53,91 @@ public class Positioning : MonoBehaviour {
             Vector3 angles = transform.localEulerAngles;
             angles.y = 180 + angle;
             transform.localEulerAngles = angles;
+
+            //Save State
+            SavePositionState();
+        }
+    }
+
+    private void SavePositionState()
+    {
+        BinaryFormatter bf = new BinaryFormatter();
+        FileStream file = File.Open(Application.persistentDataPath + "/thereminInfo.dat", FileMode.OpenOrCreate);
+
+        PositionData positionData = new PositionData();
+        positionData.Position = transform.position;
+        positionData.Rotation = transform.eulerAngles;
+        positionData.Scale = transform.localScale;
+
+        bf.Serialize(file, positionData);
+        file.Close();
+    }
+
+    private void LoadPositionState()
+    {
+        if (File.Exists(Application.persistentDataPath + "/thereminInfo.dat"))
+        {
+            BinaryFormatter bf = new BinaryFormatter();
+            FileStream file = File.Open(Application.persistentDataPath + "/thereminInfo.dat", FileMode.Open);
+            PositionData positionData = (PositionData)bf.Deserialize(file);
+            file.Close();
+
+            transform.position = positionData.Position;
+            transform.eulerAngles = positionData.Rotation;
+            transform.localScale = positionData.Scale;
+        }
+    }
+}
+
+[Serializable]
+class PositionData
+{
+    private float[] position = new float[3];
+    private float[] rotation = new float[3];
+    private float[] scale = new float[3];
+
+    public Vector3 Position
+    {
+        set
+        {
+            position[0] = value.x;
+            position[1] = value.y;
+            position[2] = value.z;
+        }
+
+        get
+        {
+            return new Vector3(position[0], position[1], position[2]);
+        }
+    }
+
+    public Vector3 Rotation
+    {
+        set
+        {
+            rotation[0] = value.x;
+            rotation[1] = value.y;
+            rotation[2] = value.z;
+        }
+
+        get
+        {
+            return new Vector3(rotation[0], rotation[1], rotation[2]);
+        }
+    }
+
+    public Vector3 Scale
+    {
+        set
+        {
+            scale[0] = value.x;
+            scale[1] = value.y;
+            scale[2] = value.z;
+        }
+
+        get
+        {
+            return new Vector3(scale[0], scale[1], scale[2]);
         }
     }
 }
