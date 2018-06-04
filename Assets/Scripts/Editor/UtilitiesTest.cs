@@ -98,7 +98,11 @@ public class UtilitiesTest {
     public void ListMidiDevices()
     {
         UnityEngine.Debug.unityLogger.logEnabled = true;
-        MidiInputCtrl.ListMidiDevices();
+        var devices = MidiInputCtrl.AvailableMidiDevices();
+        foreach (var d in devices)
+        {
+            UnityEngine.Debug.Log(string.Format("Midi Input Device: {0}", d));
+        }
     }
 
     [Test]

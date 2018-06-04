@@ -10,10 +10,9 @@ public enum MidiStatus { Play, Stop, Pause };
 
 public class NoteCtrl : IPublisher<int>
 {
-    // Public Member
-
     // Private Members
     private static NoteCtrl singleton = null;
+
     private int eventIdx;
     private Track midiTrack;
 
@@ -24,8 +23,8 @@ public class NoteCtrl : IPublisher<int>
     // Properties
     public bool Running { get; private set; }
     public int CurrentNote { get; private set; }
-
     public PlayerCtrl Player { get; set; }
+
     private string midiScore;
     public string MidiScore
     {
@@ -105,8 +104,8 @@ public class NoteCtrl : IPublisher<int>
         eventIdx = 0;
         while (true)
         {
-            MidiEvent e = midiTrack.GetMidiEvent(eventIdx);  // Load next event
-            float delay = 0;                    // NoteOff has been called so reset Delay
+            MidiEvent e = midiTrack.GetMidiEvent(eventIdx);         // Load next event
+            float delay = 0;                                        // NoteOff has been called so reset Delay
 
             if (e.MidiMessage.GetType() == typeof(ChannelMessage))  // Make sure its a Channel Message
             {
@@ -148,7 +147,6 @@ public class NoteCtrl : IPublisher<int>
 
     public void SendNotifications(int midiNote)
     {
-        // UnityEngine.Debug.Log(string.Format("Sending Notifications for Note: {0}", midiNote));
         foreach (var s in subscribers)
         {
             s.Notify(CurrentNote);
