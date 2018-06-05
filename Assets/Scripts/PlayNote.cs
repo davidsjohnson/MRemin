@@ -51,7 +51,7 @@ public class PlayNote : MonoBehaviour, ISubscriber<int> {
     void Awake()
     {
         // Subscribe to Note Ctrl notifications on new notes
-        NoteCtrl.GetInstance().Subscribe(this);
+        NoteCtrl.Control.Subscribe(this);
 
         // Store original material so we can swap between materials depending on play state
 		orgMaterial = transform.parent.gameObject.GetComponent<Renderer> ().material;

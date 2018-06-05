@@ -16,14 +16,8 @@ public class PlayerCtrl : MonoBehaviour
     public LogWriter Logger { get; private set; }
     public MidiInputCtrl MidiIn { get; private set; }   // Main Midi Input Controller used to position left and right hands
 
-    private NoteCtrl noteCtrl;
-
     void Awake ()
     {
-        // Initialize the Note Controller
-        noteCtrl = NoteCtrl.GetInstance();
-        noteCtrl.Player = this;
-
         //Initialize Midi In (so objects can subscribe to it upon load)
         MidiIn = new MidiInputCtrl();
 
@@ -41,8 +35,8 @@ public class PlayerCtrl : MonoBehaviour
         MidiIn.Start();
 
         // Start Playing
-        noteCtrl.MidiScore = MidiScoreResource;
-        noteCtrl.PlayMidi(MidiStatus.Play);
+        NoteCtrl.Control.MidiScoreFile = MidiScoreResource;
+        NoteCtrl.Control.PlayMidi(NoteCtrl.MidiStatus.Play);
 
         return true;
     }
@@ -53,15 +47,5 @@ public class PlayerCtrl : MonoBehaviour
             MidiIn.StopAndClose();
         if (Logger != null)
             Logger.Stop();
-    }
-
-    public void StartChildCoroutine(IEnumerator coroutineMethod)
-    {
-        StartCoroutine(coroutineMethod);
-    }
-
-    public void StopChildCoroutine(IEnumerator coroutineMethod)
-    {
-        StopCoroutine(coroutineMethod);
     }
 }

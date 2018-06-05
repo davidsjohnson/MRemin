@@ -18,7 +18,7 @@ public class AudioOutputTest {
 	public void ToneGeneratorCreatesSineWave() {
         // Instantiate Tone Generator for testing
         // Set Freq to 1000
-        ToneGenerator toneGenerator = new ToneGenerator(NoteCtrl.GetInstance(), AudioSettings.outputSampleRate, 1);
+        ToneGenerator toneGenerator = new ToneGenerator(NoteCtrl.Control, AudioSettings.outputSampleRate, 1);
         toneGenerator.Frequency = 1000;
 
         // Get Data from the Generator
@@ -38,7 +38,7 @@ public class AudioOutputTest {
     {
         // Instantiate Tone Generator for testing
         // Set Freq to 1000
-        ToneGenerator toneGenerator = new ToneGenerator(NoteCtrl.GetInstance(), AudioSettings.outputSampleRate, 1);
+        ToneGenerator toneGenerator = new ToneGenerator(NoteCtrl.Control, AudioSettings.outputSampleRate, 1);
         toneGenerator.Frequency = 1000;
 
         float precisionDelta = .0001f;

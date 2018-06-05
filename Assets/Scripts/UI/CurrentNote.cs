@@ -27,7 +27,7 @@ public class CurrentNote : MonoBehaviour, ISubscriber<int> {
     // Use this for initialization
     void Awake ()
     {
-        NoteCtrl.GetInstance().Subscribe(this);
+        NoteCtrl.Control.Subscribe(this);
         noteTxt = GetComponent<Text>();
         noteTxt.text = "";
 	}
