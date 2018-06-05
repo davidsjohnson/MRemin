@@ -23,6 +23,8 @@ public class NoteCtrl : IPublisher<int>
     // Properties
     public bool Running { get; private set; }
     public int CurrentNote { get; private set; }
+    public int NextNote { get; private set; }
+
     public PlayerCtrl Player { get; set; }
 
     private string midiScore;
@@ -125,7 +127,7 @@ public class NoteCtrl : IPublisher<int>
                     ChannelMessage nextM = nextE.MidiMessage as ChannelMessage;
 
                     // Find note off for current note
-                    while (j < midiTrack.Count && nextM.Command != ChannelCommand.NoteOff && nextM.Data1 != note)
+                    while (j < midiTrack.Count && nextM.Command != ChannelCommand.NoteOff && nextM.Data1 != CurrentNote)
                     {
                         j++;
                         nextE = midiTrack.GetMidiEvent(j);
@@ -138,7 +140,7 @@ public class NoteCtrl : IPublisher<int>
             }
             // Move to next MIDI event to find next note on
             eventIdx++;
-            eventIdx %= midiTrack.Count;
+            eventIdx %= midiTrack.Count;  // used to Loop...Probably don't want this in real setting...
 
             yield return new WaitForSecondsRealtime(delay);
         }
