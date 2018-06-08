@@ -8,6 +8,9 @@ public class PlayerCtrl : MonoBehaviour
 {        
     // Leaving for now. TODO: remove this at some point?
     public bool noteCtrlOn = true;
+
+    public int minMidiNote = 36;
+    public int maxMidiNote = 72;
    
     public string ParticipantID { get; set; }           // Participant ID
     public string MidiScoreResource { get; set; }       // Name of file containing Midi data

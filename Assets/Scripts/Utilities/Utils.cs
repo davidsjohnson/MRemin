@@ -7,6 +7,10 @@ using UnityEngine;
 public static class Utilities
 {
 
+    public static int MinMIDIIn = 0;
+    public static int MaxMIDIIn = 127;
+
+
     private static string[] notes = { "C", "C<i>#</i>", "D", "D<i>#</i>", "E", "F", "F<i>#</i>", "G", "G<i>#</i>", "A", "A<i>#</i>", "B" };
 
     /*
@@ -22,10 +26,8 @@ public static class Utilities
        return Mathf.Pow(2, (midiNote - 69) / 12.0f) * 440.0f;
     }
 
-    public static string Midi2NoteStr(int midiNote)
+    public static string Midi2NoteStr(int midiNote, int octaveSize=36)
     {
-        int octaveSize = 36;
-
         string noteStr = notes[midiNote % 12];
         int octave = midiNote / notes.Length - 1;  // - 1 becuase octaves start at -1
 

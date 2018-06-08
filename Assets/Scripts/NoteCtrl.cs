@@ -4,7 +4,29 @@ using UnityEngine;
 using NAudio.Midi;
 using System;
 
-public class NoteCtrl : MonoBehaviour, IPublisher<int>
+
+public class NoteMessage
+{
+    public int NoteNumber { get; private set; }
+    public int NextNoteNumber { get; private set; }
+    public float Length { get; private set; }
+
+    public NoteMessage(int noteNumber, int nextNoteNumber, float length)
+    {
+        NoteNumber = noteNumber;
+        NextNoteNumber = nextNoteNumber;
+        Length = length;
+    }
+
+    public NoteMessage(int noteNumber)
+    {
+        NoteNumber = noteNumber;
+        NextNoteNumber = -1;
+        Length = -1;
+    }
+}
+
+public class NoteCtrl : MonoBehaviour, IPublisher<NoteMessage>
 {
 
     public enum MidiStatus { Play, Stop, Pause};
@@ -12,10 +34,10 @@ public class NoteCtrl : MonoBehaviour, IPublisher<int>
     // Properties
     public static NoteCtrl Control { get; private set; }       // For Singleton..
     public bool Running { get; private set; }
-    public int NextNote { get; private set; }
+    public bool ScoreLoaded { get; private set; }
 
-    private int currentNote;
-    public int CurrentNote {
+    private NoteMessage currentNote;
+    public NoteMessage CurrentNote {
         get
         {
             return currentNote;
@@ -44,8 +66,14 @@ public class NoteCtrl : MonoBehaviour, IPublisher<int>
 
     // Private Members
     private MidiFile mf;
-    private readonly List<ISubscriber<int>> subscribers = new List<ISubscriber<int>>();     // List of subscribers to notify
+    private readonly List<ISubscriber<NoteMessage>> subscribers = new List<ISubscriber<NoteMessage>>();     // List of subscribers to notify
     private IEnumerator playMidi = null;
+
+    // assuming 4/4 time signature and 120 BPM 
+    // (don't need to support any other signatures for this super simple sequencer)
+    private const int TEMPO = 120;
+    private int ppq;                // pulses per quarter (from MidiFile)
+
 
     private void Awake()
     {
@@ -67,6 +95,8 @@ public class NoteCtrl : MonoBehaviour, IPublisher<int>
     {
         var strictMode = false;
         mf = new MidiFile(MidiScoreFile, strictMode);
+        ppq = mf.DeltaTicksPerQuarterNote;
+        ScoreLoaded = true;
     }
 
     public void PlayMidi(MidiStatus midiStatus)
@@ -102,30 +132,31 @@ public class NoteCtrl : MonoBehaviour, IPublisher<int>
 
         var track = mf.Events[0];  // MIDI Files for VRMIN should only have one track
         int eventIdx = 0;
-        while (true)
+        while (eventIdx < track.Count)
         {
 
             var midiEvent = track[eventIdx];
             if (MidiEvent.IsNoteOn(midiEvent))
             {
                 NoteOnEvent noteOn = (NoteOnEvent)midiEvent;
-                CurrentNote = noteOn.NoteNumber;
-                float delay = noteOn.NoteLength / 192f * .5f;  // Verify this formula
 
                 //find next note on
                 int nextIdx = eventIdx + 1;
-                while (nextIdx < track.Count && !MidiEvent.IsNoteOn(track[eventIdx]))
+
+                while (!MidiEvent.IsNoteOn(track[nextIdx]) && nextIdx < track.Count)
                 {
                     nextIdx++;
                 }
-                // found a note on event
-                NextNote = ((NoteOnEvent)track[nextIdx%track.Count]).NoteNumber;   // using Mod since we are currently looping midi track
+                // found a note on event or end of track
+                int nextNote = nextIdx != track.Count ? ((NoteOnEvent)track[nextIdx]).NoteNumber : -1;  // if we reached the end without a Note on then send -1
+                float length = (noteOn.NoteLength / ppq) *  60 / TEMPO;                                 // Note length in seconds
+                CurrentNote = new NoteMessage(noteOn.NoteNumber, nextNote, length);
 
-                yield return new WaitForSecondsRealtime(delay);
+                Debug.Log("Note Length: " + length);
+                yield return new WaitForSecondsRealtime(length);
             }
 
             eventIdx++;
-            eventIdx %= track.Count;  //used to Loop probably need to send a Stop Message
         }
     }
 
@@ -133,17 +164,17 @@ public class NoteCtrl : MonoBehaviour, IPublisher<int>
     // Pub Sub Interface Methods
     // #########################
 
-    public void Subscribe(ISubscriber<int> subscriber)
+    public void Subscribe(ISubscriber<NoteMessage> subscriber)
     {
         subscribers.Add(subscriber);
     }
 
-    public void Unsubscribe(ISubscriber<int> subscriber)
+    public void Unsubscribe(ISubscriber<NoteMessage> subscriber)
     {
         subscribers.Remove(subscriber);
     }
 
-    public void SendNotifications(int message)
+    public void SendNotifications(NoteMessage message)
     {
         foreach (var s in subscribers)
         {

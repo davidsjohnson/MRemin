@@ -5,17 +5,15 @@ using System.Text;
 using System;
 using UnityOSC;
 
-public class PlayNote : MonoBehaviour, ISubscriber<int> {
+public class PlayNote : MonoBehaviour, ISubscriber<NoteMessage> {
 
     // Public members
+    public PlayerCtrl playerCtrl;
 
     // Max and min Y values for the note ring
     public float minSize;
     public float maxSize;
 
-    // Max and min midi note values that the Theremin will produce (can be configured on the Theremini)
-    public int minNote = 36;
-    public int maxNote = 71;
 
     // Number of steps for note size transition animation
     public int changeSteps = 20;
@@ -27,6 +25,7 @@ public class PlayNote : MonoBehaviour, ISubscriber<int> {
     private float minFreq;
     private float maxFreq;
 
+
     private Material orgMaterial;
 
 	private float changeSize = 0;
@@ -35,16 +34,16 @@ public class PlayNote : MonoBehaviour, ISubscriber<int> {
     /*
      * Required method for ISubscriber Interface to handle note change updates
      */
-    public void Notify(int midiNote)
+    public void Notify(NoteMessage midiNote)
     {
-        NextNote(midiNote);
+        NextNote(midiNote.NoteNumber);
     }
 
     public void Notify(string midiNote)
     {
         int temp = 0;
         int.TryParse(midiNote, out temp);
-        Notify(temp);
+        Notify(new NoteMessage(temp));
     }
 
 
@@ -57,8 +56,8 @@ public class PlayNote : MonoBehaviour, ISubscriber<int> {
 		orgMaterial = transform.parent.gameObject.GetComponent<Renderer> ().material;
 
         // Calculate min and max frequencies of the Theremin (based on max and min midi notes)
-        minFreq = Utilities.Midi2Freq(minNote);
-        maxFreq = Utilities.Midi2Freq(maxNote);
+        minFreq = Utilities.Midi2Freq(playerCtrl.minMidiNote);
+        maxFreq = Utilities.Midi2Freq(playerCtrl.maxMidiNote);
 
         NextNote(63);
     }

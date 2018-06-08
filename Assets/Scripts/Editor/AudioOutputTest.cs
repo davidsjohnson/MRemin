@@ -55,7 +55,7 @@ public class AudioOutputTest {
         AssertBuffersAreEqual(expectedBuffer1000, buffer1, precisionDelta);
 
         int newMidi = 69;
-        toneGenerator.Notify(newMidi);
+        toneGenerator.Notify(new NoteMessage(newMidi));
 
         float[] buffer2 = new float[bufferLen];
         toneGenerator.Read(buffer2, 0, buffer2.Length);
