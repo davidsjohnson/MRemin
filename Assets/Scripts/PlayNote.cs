@@ -7,9 +7,6 @@ using UnityOSC;
 
 public class PlayNote : MonoBehaviour, ISubscriber<NoteMessage> {
 
-    // Public members
-    public PlayerCtrl playerCtrl;
-
     // Max and min Y values for the note ring
     public float minSize;
     public float maxSize;
@@ -56,8 +53,8 @@ public class PlayNote : MonoBehaviour, ISubscriber<NoteMessage> {
 		orgMaterial = transform.parent.gameObject.GetComponent<Renderer> ().material;
 
         // Calculate min and max frequencies of the Theremin (based on max and min midi notes)
-        minFreq = Utilities.Midi2Freq(playerCtrl.minMidiNote);
-        maxFreq = Utilities.Midi2Freq(playerCtrl.maxMidiNote);
+        minFreq = Utilities.Midi2Freq(PlayerCtrl.Control.minMidiNote);
+        maxFreq = Utilities.Midi2Freq(PlayerCtrl.Control.maxMidiNote);
 
         NextNote(63);
     }
@@ -96,12 +93,19 @@ public class PlayNote : MonoBehaviour, ISubscriber<NoteMessage> {
      */
 	void NextNote(int midiNote)
     {
-        //change note and note size
-        transform.parent.gameObject.GetComponent<Renderer>().material = orgMaterial;    // reset to original material 
-        currentStep = 0;                                                                // Reset step since we're starting size change animation 
-		Vector3 newScale = CalculateNoteScale (midiNote);
-		float scaleDiff = newScale.x - transform.parent.transform.localScale.x;         // Find amount ring needs to resize
-		changeSize = scaleDiff / changeSteps;                                           // amount ring should change at each update until complete
+        if (midiNote != -1)
+        {
+            //change note and note size
+            transform.parent.gameObject.GetComponent<Renderer>().material = orgMaterial;    // reset to original material 
+            currentStep = 0;                                                                // Reset step since we're starting size change animation 
+            Vector3 newScale = CalculateNoteScale(midiNote);
+            float scaleDiff = newScale.x - transform.parent.transform.localScale.x;         // Find amount ring needs to resize
+            changeSize = scaleDiff / changeSteps;                                           // amount ring should change at each update until complete
+        }
+        else
+        {
+            PlayerCtrl.Control.MidiComplete();
+        }
 	}
 
     /*

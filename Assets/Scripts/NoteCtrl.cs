@@ -116,7 +116,6 @@ public class NoteCtrl : MonoBehaviour, IPublisher<NoteMessage>
                     StopCoroutine(playMidi);
                     Running = false;
                 }
-
                 break;
             case MidiStatus.Pause:
             default:
@@ -132,22 +131,21 @@ public class NoteCtrl : MonoBehaviour, IPublisher<NoteMessage>
 
         var track = mf.Events[0];  // MIDI Files for VRMIN should only have one track
         int eventIdx = 0;
-        while (eventIdx < track.Count)
+        foreach(var midiEvent in track)
         {
-
-            var midiEvent = track[eventIdx];
             if (MidiEvent.IsNoteOn(midiEvent))
             {
                 NoteOnEvent noteOn = (NoteOnEvent)midiEvent;
 
                 //find next note on
                 int nextIdx = eventIdx + 1;
-
-                while (!MidiEvent.IsNoteOn(track[nextIdx]) && nextIdx < track.Count)
+                while (nextIdx < track.Count && !MidiEvent.IsNoteOn(track[nextIdx]))
                 {
                     nextIdx++;
                 }
                 // found a note on event or end of track
+
+                //build Note Message
                 int nextNote = nextIdx != track.Count ? ((NoteOnEvent)track[nextIdx]).NoteNumber : -1;  // if we reached the end without a Note on then send -1
                 float length = (noteOn.NoteLength / ppq) *  60 / TEMPO;                                 // Note length in seconds
                 CurrentNote = new NoteMessage(noteOn.NoteNumber, nextNote, length);
@@ -155,9 +153,12 @@ public class NoteCtrl : MonoBehaviour, IPublisher<NoteMessage>
                 Debug.Log("Note Length: " + length);
                 yield return new WaitForSecondsRealtime(length);
             }
-
             eventIdx++;
         }
+
+        CurrentNote = new NoteMessage(-1);      // Done so let's send a final Message with note = -1
+        Running = false;
+        playMidi = PlayMidiTrack();             // And reset the IEnumerator to we can play another track           
     }
 
 

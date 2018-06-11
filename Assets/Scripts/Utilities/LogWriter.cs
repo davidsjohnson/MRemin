@@ -86,19 +86,22 @@ public class LogWriter
 
     public void Start(string filename=null)
     {
-        SetLogFile(filename);
-        if (!string.IsNullOrEmpty(FilePath))
+        if (!isRunning)
         {
-            lock (lockObj)
+            SetLogFile(filename);
+            if (!string.IsNullOrEmpty(FilePath))
             {
-                isRunning = true;
+                lock (lockObj)
+                {
+                    isRunning = true;
+                }
+                thread = new Thread(Run);
+                thread.Start();
             }
-            thread = new Thread(Run);
-            thread.Start();
-        }
-        else
-        {
-            throw new System.ArgumentException("File path for log has not been set");
+            else
+            {
+                throw new System.ArgumentException("File path for log has not been set");
+            }
         }
     }
 

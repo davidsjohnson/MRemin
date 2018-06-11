@@ -56,11 +56,22 @@ public class CurrentNote : MonoBehaviour, ISubscriber<NoteMessage> {
 
     private void updateNotes()
     {
-        noteTxt.text = string.Format("{0}", Utilities.Midi2NoteStr(currentNote.NoteNumber));
+        noteTxt.text = currentNote.NoteNumber != -1 ? string.Format("{0}", Utilities.Midi2NoteStr(currentNote.NoteNumber)) : string.Format("");
+        
+        if (currentNote.NoteNumber != -1)
+        {
+            started = true;
+            StartMove();
 
-        int nextNote = currentNote.NextNoteNumber;
-        nextNoteTxt.text = nextNote != -1 ? string.Format("{0}", Utilities.Midi2NoteStr(nextNote)) : string.Format("Fin!");
-        StartMove();
+            int nextNote = currentNote.NextNoteNumber;
+            nextNoteTxt.text = nextNote != -1 ? string.Format("{0}", Utilities.Midi2NoteStr(nextNote)) : string.Format("Fin");
+        }
+        else
+        {
+            nextNoteTxt.text = string.Format("");
+            started = false;
+        }
+
     }
 
 

@@ -5,8 +5,6 @@ using Sanford.Multimedia.Midi;
 
 public class RightHandCtrl : MonoBehaviour, ISubscriber<ChannelMessage> {
 
-    public PlayerCtrl playerCtrl;
-
     public float minPosition;
     public float maxPosition;
 
@@ -23,12 +21,12 @@ public class RightHandCtrl : MonoBehaviour, ISubscriber<ChannelMessage> {
         Animator rhAnimator = GetComponent<Animator>();
         rhAnimator.SetTrigger(Animator.StringToHash("OK"));
 
-        playerCtrl.MidiIn.Subscribe(this);
+        PlayerCtrl.Control.MidiIn.Subscribe(this);
 	}
 
     void onDisable()
     {
-        playerCtrl.MidiIn.Unsubscribe(this);
+        PlayerCtrl.Control.MidiIn.Unsubscribe(this);
     }
 
 
@@ -50,7 +48,7 @@ public class RightHandCtrl : MonoBehaviour, ISubscriber<ChannelMessage> {
             tmp.x = newPosition;
             transform.localPosition = tmp;
 
-            playerCtrl.Logger.Log("{0}\t{1}\t{2}", channel, value, ts);
+            PlayerCtrl.Control.Logger.Log("{0}\t{1}\t{2}", channel, value, ts);
         }
     }
 }

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class StartButton : MonoBehaviour {
+public class ContinueButton : MonoBehaviour {
 
     public GameObject parentCanvas;
 
@@ -18,16 +18,10 @@ public class StartButton : MonoBehaviour {
 
     private void OnClickHandler()
     {
-        if (string.IsNullOrEmpty(PlayerCtrl.Control.MidiInputDeviceName))
-            throw new System.ArgumentException("No MIDI device provided");
-
         if (string.IsNullOrEmpty(PlayerCtrl.Control.MidiScoreResource))
             throw new System.ArgumentException("No MIDI score provided");
 
-        if (string.IsNullOrEmpty(PlayerCtrl.Control.ParticipantID))
-            throw new System.ArgumentException("No participant ID provided");
-
-        PlayerCtrl.Control.StartVRMin();
+        PlayerCtrl.Control.StartNewScore();
 
         Destroy(parentCanvas);
     }

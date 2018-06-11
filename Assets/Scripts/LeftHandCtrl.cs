@@ -5,8 +5,6 @@ using Sanford.Multimedia.Midi;
 
 public class LeftHandCtrl : MonoBehaviour, ISubscriber<ChannelMessage>
 {
-    public PlayerCtrl playerCtrl;
-
     public float minPosition;
     public float maxPosition;
 
@@ -18,12 +16,12 @@ public class LeftHandCtrl : MonoBehaviour, ISubscriber<ChannelMessage>
     // Use this for initialization
     void Start()
     {
-        playerCtrl.MidiIn.Subscribe(this);
+        PlayerCtrl.Control.MidiIn.Subscribe(this);
     }
 
     void onDisable()
     {
-        playerCtrl.MidiIn.Unsubscribe(this);
+        PlayerCtrl.Control.MidiIn.Unsubscribe(this);
     }
 
     public void Notify(ChannelMessage message)
@@ -43,7 +41,7 @@ public class LeftHandCtrl : MonoBehaviour, ISubscriber<ChannelMessage>
             tmp.y = newPosition;
             transform.localPosition = tmp;
 
-            playerCtrl.Logger.Log("{0}\t{1}\t{2}", channel, value, ts);
+            PlayerCtrl.Control.Logger.Log("{0}\t{1}\t{2}", channel, value, ts);
         }
     }
 }
