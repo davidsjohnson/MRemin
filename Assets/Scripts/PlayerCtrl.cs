@@ -8,7 +8,13 @@ public class PlayerCtrl : MonoBehaviour
 {        
     // Leaving for now. TODO: remove this at some point?
     public bool noteCtrlOn = true;
-   
+
+    public int minMidiNote = 36;
+    public int maxMidiNote = 72;
+
+    public GameObject completedMessagePrefab;
+    public GameObject completedMenuPrefab;
+
     public string ParticipantID { get; set; }           // Participant ID
     public string MidiScoreResource { get; set; }       // Name of file containing Midi data
     public string MidiInputDeviceName { get; set; }     // Name of Midi Device to connect to
@@ -16,13 +22,23 @@ public class PlayerCtrl : MonoBehaviour
     public LogWriter Logger { get; private set; }
     public MidiInputCtrl MidiIn { get; private set; }   // Main Midi Input Controller used to position left and right hands
 
-    private NoteCtrl noteCtrl;
+    public static PlayerCtrl Control { get; private set; }     // Singleton Accessor
+
+    private GameObject completedMessage;
+    private GameObject completedMenu;
 
     void Awake ()
     {
-        // Initialize the Note Controller
-        noteCtrl = NoteCtrl.GetInstance();
-        noteCtrl.Player = this;
+        //Implement Psuedo-Singleton
+        if (Control == null)
+        {
+            DontDestroyOnLoad(gameObject);
+            Control = this;
+        }
+        else if (Control != this)
+        {
+            Destroy(gameObject);
+        }
 
         //Initialize Midi In (so objects can subscribe to it upon load)
         MidiIn = new MidiInputCtrl();
@@ -41,10 +57,29 @@ public class PlayerCtrl : MonoBehaviour
         MidiIn.Start();
 
         // Start Playing
-        noteCtrl.MidiScore = MidiScoreResource;
-        noteCtrl.PlayMidi(MidiStatus.Play);
+        NoteCtrl.Control.MidiScoreFile = MidiScoreResource;
+        NoteCtrl.Control.PlayMidi(NoteCtrl.MidiStatus.Play);
 
         return true;
+    }
+
+    public bool StartNewScore()
+    {
+        NoteCtrl.Control.MidiScoreFile = MidiScoreResource;
+        NoteCtrl.Control.PlayMidi(NoteCtrl.MidiStatus.Play);
+
+        Destroy(completedMessage);
+
+        return true;
+    }
+
+    public void MidiComplete()
+    {   
+        //instatiate completed menu and set player controller to this
+        completedMenu = Instantiate(completedMenuPrefab);
+
+        // instatiate completed message for the user
+        completedMessage = Instantiate(completedMessagePrefab);
     }
 
     void OnDisable()
@@ -53,15 +88,5 @@ public class PlayerCtrl : MonoBehaviour
             MidiIn.StopAndClose();
         if (Logger != null)
             Logger.Stop();
-    }
-
-    public void StartChildCoroutine(IEnumerator coroutineMethod)
-    {
-        StartCoroutine(coroutineMethod);
-    }
-
-    public void StopChildCoroutine(IEnumerator coroutineMethod)
-    {
-        StopCoroutine(coroutineMethod);
     }
 }

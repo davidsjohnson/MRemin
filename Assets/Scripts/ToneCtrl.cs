@@ -12,7 +12,7 @@ public class ToneCtrl : MonoBehaviour {
 
     private void Awake()
     {
-        toneGenerator = new ToneGenerator(NoteCtrl.GetInstance(), AudioSettings.outputSampleRate, channels);
+        toneGenerator = new ToneGenerator(NoteCtrl.Control, AudioSettings.outputSampleRate, channels);
 
         AudioSource audioSource = gameObject.GetComponent<AudioSource>();
         if (audioSource != null)

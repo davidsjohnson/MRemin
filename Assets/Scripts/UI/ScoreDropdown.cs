@@ -8,7 +8,6 @@ using UnityEngine.UI;
 
 public class ScoreDropdown : MonoBehaviour {
 
-    public PlayerCtrl playerCtrl;
     private Dropdown dropdown;
 
     private List<string> midiScoreFiles;
@@ -26,7 +25,7 @@ public class ScoreDropdown : MonoBehaviour {
     private void OnValueChangedHandler(Dropdown change)
     {
         if(change.value != 0)
-            playerCtrl.MidiScoreResource = Path.Combine(scorePath, change.captionText.text);
+            PlayerCtrl.Control.MidiScoreResource = Path.Combine(scorePath, change.captionText.text);
     }
 
     private List<string> MidiScores

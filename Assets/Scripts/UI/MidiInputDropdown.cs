@@ -5,8 +5,6 @@ using UnityEngine.UI;
 
 public class MidiInputDropdown : MonoBehaviour {
 
-    public PlayerCtrl playerCtrl;
-
     private Dropdown dropdown;
 
     void Start()
@@ -20,6 +18,6 @@ public class MidiInputDropdown : MonoBehaviour {
     private void OnValueChangedHandler(Dropdown change)
     {
         if (change.value != 0)
-            playerCtrl.MidiInputDeviceName = change.captionText.text;
+            PlayerCtrl.Control.MidiInputDeviceName = change.captionText.text;
     }
 }

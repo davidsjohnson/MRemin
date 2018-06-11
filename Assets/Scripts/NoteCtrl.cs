@@ -1,72 +1,103 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
-using System.IO;
 using UnityEngine;
-using Sanford.Multimedia.Midi;
+using NAudio.Midi;
+using System;
 
 
-public enum MidiStatus { Play, Stop, Pause };
-
-
-public class NoteCtrl : IPublisher<int>
+public class NoteMessage
 {
-    // Private Members
-    private static NoteCtrl singleton = null;
+    public int NoteNumber { get; private set; }
+    public int NextNoteNumber { get; private set; }
+    public float Length { get; private set; }
 
-    private int eventIdx;
-    private Track midiTrack;
+    public NoteMessage(int noteNumber, int nextNoteNumber, float length)
+    {
+        NoteNumber = noteNumber;
+        NextNoteNumber = nextNoteNumber;
+        Length = length;
+    }
 
-    private static List<ISubscriber<int>> subscribers = new List<ISubscriber<int>>();
+    public NoteMessage(int noteNumber)
+    {
+        NoteNumber = noteNumber;
+        NextNoteNumber = -1;
+        Length = -1;
+    }
+}
 
-    private IEnumerator playMidi = null;
+public class NoteCtrl : MonoBehaviour, IPublisher<NoteMessage>
+{
+
+    public enum MidiStatus { Play, Stop, Pause};
 
     // Properties
+    public static NoteCtrl Control { get; private set; }       // For Singleton..
     public bool Running { get; private set; }
-    public int CurrentNote { get; private set; }
-    public int NextNote { get; private set; }
+    public bool ScoreLoaded { get; private set; }
 
-    public PlayerCtrl Player { get; set; }
-
-    private string midiScore;
-    public string MidiScore
-    {
+    private NoteMessage currentNote;
+    public NoteMessage CurrentNote {
         get
         {
-            return midiScore;
+            return currentNote;
         }
         set
         {
-            midiScore = value;
+            currentNote = value;
+            SendNotifications(currentNote);
+        }
+    }
+
+    private string midiScoreFile;
+    public string MidiScoreFile
+    {
+        get
+        {
+            return midiScoreFile;
+        }
+
+        set
+        {
+            midiScoreFile = value;
             LoadScore();
         }
     }
 
-    private NoteCtrl()
-    {
-        playMidi = PlayMidiTrack();
-    }
+    // Private Members
+    private MidiFile mf;
+    private readonly List<ISubscriber<NoteMessage>> subscribers = new List<ISubscriber<NoteMessage>>();     // List of subscribers to notify
+    private IEnumerator playMidi = null;
 
-    // Methods
+    // assuming 4/4 time signature and 120 BPM 
+    // (don't need to support any other signatures for this super simple sequencer)
+    private const int TEMPO = 120;
+    private int ppq;                // pulses per quarter (from MidiFile)
 
-    public static NoteCtrl GetInstance()
+
+    private void Awake()
     {
-        if (singleton == null)
+        //Implement Psuedo-Singleton
+        if(Control == null)
         {
-            singleton = new NoteCtrl();
+            DontDestroyOnLoad(gameObject);
+            Control = this;
+            playMidi = PlayMidiTrack();
         }
-        return singleton;
+        else if (Control != this)
+        {
+            Destroy(gameObject);
+        }
     }
 
-    /*
-     * Loads a score from a MIDI file for a teaching a melody to a student
-     */
+
     private void LoadScore()
     {
-        Sequence s = new Sequence();
-        s.Load(MidiScore);
-        midiTrack = s[0];  // For now assume only 1 track per Sequence (TODO: Review Sequences in new Midi Toolkit)
+        var strictMode = false;
+        mf = new MidiFile(MidiScoreFile, strictMode);
+        ppq = mf.DeltaTicksPerQuarterNote;
+        ScoreLoaded = true;
     }
-
 
     public void PlayMidi(MidiStatus midiStatus)
     {
@@ -75,93 +106,80 @@ public class NoteCtrl : IPublisher<int>
             case MidiStatus.Play:
                 if (!Running)
                 {
-                    Player.StartChildCoroutine(playMidi);
+                    StartCoroutine(playMidi);
                     Running = true;
                 }
                 break;
             case MidiStatus.Stop:
                 if (Running)
                 {
-                    Player.StopChildCoroutine(playMidi);
+                    StopCoroutine(playMidi);
                     Running = false;
                 }
-
                 break;
             case MidiStatus.Pause:
             default:
-                UnityEngine.Debug.Log("MIDI status not yet implemented");
+                UnityEngine.Debug.Log(string.Format("MIDI status, {0}, not available", midiStatus));
                 break;
         }
     }
 
-    /*
-     * Plays a MIDI Track and updates all subscribers when new note is played.
-     * MIDI Track is assumed to be monophonic
-     * (TODO: Look into a better method for playing MIDI. This seems a bit of a hack)
-     */
+
     private IEnumerator PlayMidiTrack()
     {
-        UnityEngine.Debug.Log("Starting Midi Track");
+        UnityEngine.Debug.Log("Starting MIDI File");
 
-        eventIdx = 0;
-        while (true)
+        var track = mf.Events[0];  // MIDI Files for VRMIN should only have one track
+        int eventIdx = 0;
+        foreach(var midiEvent in track)
         {
-            MidiEvent e = midiTrack.GetMidiEvent(eventIdx);         // Load next event
-            float delay = 0;                                        // NoteOff has been called so reset Delay
-
-            if (e.MidiMessage.GetType() == typeof(ChannelMessage))  // Make sure its a Channel Message
+            if (MidiEvent.IsNoteOn(midiEvent))
             {
-                // Get Note Info from Message
-                ChannelMessage m = e.MidiMessage as ChannelMessage;
-                int note = m.Data1;
+                NoteOnEvent noteOn = (NoteOnEvent)midiEvent;
 
-                if (m.Command == ChannelCommand.NoteOn)
+                //find next note on
+                int nextIdx = eventIdx + 1;
+                while (nextIdx < track.Count && !MidiEvent.IsNoteOn(track[nextIdx]))
                 {
-                    // Received a Note On so set current note and notify all subscribers
-                    CurrentNote = note;
-                    SendNotifications(CurrentNote);
-
-                    // Check next events in MidiTrack for a note off  (TODO: Review MIDI docs for better method)
-                    int j = eventIdx + 1;
-                    MidiEvent nextE = midiTrack.GetMidiEvent(j);
-                    ChannelMessage nextM = nextE.MidiMessage as ChannelMessage;
-
-                    // Find note off for current note
-                    while (j < midiTrack.Count && nextM.Command != ChannelCommand.NoteOff && nextM.Data1 != CurrentNote)
-                    {
-                        j++;
-                        nextE = midiTrack.GetMidiEvent(j);
-                        nextM = nextE.MidiMessage as ChannelMessage;
-                    }
-
-                    // Now that we found the note off Set delay for IEnumerator based on number of Ticks
-                    delay = nextE.DeltaTicks / 192f * .5f; //TODO: Verify this calculation
+                    nextIdx++;
                 }
-            }
-            // Move to next MIDI event to find next note on
-            eventIdx++;
-            eventIdx %= midiTrack.Count;  // used to Loop...Probably don't want this in real setting...
+                // found a note on event or end of track
 
-            yield return new WaitForSecondsRealtime(delay);
+                //build Note Message
+                int nextNote = nextIdx != track.Count ? ((NoteOnEvent)track[nextIdx]).NoteNumber : -1;  // if we reached the end without a Note on then send -1
+                float length = (noteOn.NoteLength / ppq) *  60 / TEMPO;                                 // Note length in seconds
+                CurrentNote = new NoteMessage(noteOn.NoteNumber, nextNote, length);
+
+                Debug.Log("Note Length: " + length);
+                yield return new WaitForSecondsRealtime(length);
+            }
+            eventIdx++;
         }
+
+        CurrentNote = new NoteMessage(-1);      // Done so let's send a final Message with note = -1
+        Running = false;
+        playMidi = PlayMidiTrack();             // And reset the IEnumerator to we can play another track           
     }
 
 
-    public void SendNotifications(int midiNote)
+    // Pub Sub Interface Methods
+    // #########################
+
+    public void Subscribe(ISubscriber<NoteMessage> subscriber)
+    {
+        subscribers.Add(subscriber);
+    }
+
+    public void Unsubscribe(ISubscriber<NoteMessage> subscriber)
+    {
+        subscribers.Remove(subscriber);
+    }
+
+    public void SendNotifications(NoteMessage message)
     {
         foreach (var s in subscribers)
         {
             s.Notify(CurrentNote);
         }
-    }
-
-    public void Subscribe(ISubscriber<int> subscriber)
-    {
-        subscribers.Add(subscriber);
-    }
-
-    public void Unsubscribe(ISubscriber<int> subscriber)
-    {
-        subscribers.Remove(subscriber);
     }
 }

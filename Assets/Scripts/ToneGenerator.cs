@@ -6,7 +6,7 @@ using NAudio.Wave;
 using NAudio.Wave.SampleProviders;
 using UnityEngine;
 
-public class ToneGenerator : ISubscriber<int>, ISampleProvider
+public class ToneGenerator : ISubscriber<NoteMessage>, ISampleProvider
 {
     private double frequency = 440.0;
     public double Frequency
@@ -51,9 +51,9 @@ public class ToneGenerator : ISubscriber<int>, ISampleProvider
     }
 
     // ISubscriber Interface
-    public void Notify(int midiNote)
+    public void Notify(NoteMessage midiNote)
     {
-        Frequency = Utilities.Midi2Freq(midiNote);
+        Frequency = Utilities.Midi2Freq(midiNote.NoteNumber);
         signalGenerator.Frequency = Frequency;
     }
 
