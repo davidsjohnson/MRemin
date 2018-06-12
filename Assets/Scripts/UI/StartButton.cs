@@ -21,6 +21,9 @@ public class StartButton : MonoBehaviour {
         if (string.IsNullOrEmpty(PlayerCtrl.Control.MidiInputDeviceName))
             throw new System.ArgumentException("No MIDI device provided");
 
+        if (string.IsNullOrEmpty(PlayerCtrl.Control.SessionNum))
+            throw new System.ArgumentException("No Session # provided");
+
         if (string.IsNullOrEmpty(PlayerCtrl.Control.MidiScoreResource))
             throw new System.ArgumentException("No MIDI score provided");
 

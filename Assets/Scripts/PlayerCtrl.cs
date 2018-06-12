@@ -12,10 +12,10 @@ public class PlayerCtrl : MonoBehaviour
     public int minMidiNote = 36;
     public int maxMidiNote = 72;
 
-    public GameObject completedMessagePrefab;
     public GameObject completedMenuPrefab;
 
     public string ParticipantID { get; set; }           // Participant ID
+    public string SessionNum { get; set; }              // Session Number - to help keep track of log files
     public string MidiScoreResource { get; set; }       // Name of file containing Midi data
     public string MidiInputDeviceName { get; set; }     // Name of Midi Device to connect to
 
@@ -50,7 +50,7 @@ public class PlayerCtrl : MonoBehaviour
     public bool StartVRMin()
     {
         // Start Up the Logger
-        Logger.Start(string.Format("p{0}-midi-logger", ParticipantID));
+        Logger.Start(string.Format("p{0}-session{1}-midi-log", ParticipantID, SessionNum));
 
         //Start Up the Midi Controllers
         MidiIn.Connect(MidiInputDeviceName);
@@ -77,9 +77,6 @@ public class PlayerCtrl : MonoBehaviour
     {   
         //instatiate completed menu and set player controller to this
         completedMenu = Instantiate(completedMenuPrefab);
-
-        // instatiate completed message for the user
-        completedMessage = Instantiate(completedMessagePrefab);
     }
 
     void OnDisable()
