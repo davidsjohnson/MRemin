@@ -11,7 +11,7 @@ Material:
   m_ShaderKeywords: _BORDER_LIGHT_USES_HOVER_COLOR _DISABLE_ALBEDO_MAP _SPECULARHIGHLIGHTS_ON
     _SPECULAR_HIGHLIGHTS _USEAMBIENT_ON _USEDIFFUSE_ON _USEMAINCOLOR_ON
   m_LightmapFlags: 1
-  m_EnableInstancingVariants: 1
+  m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
   m_CustomRenderQueue: 2000
   stringTagMap:
