@@ -1,31 +1,31 @@
 ﻿using UnityEngine;
 using System.Collections;
-using System.Text;
-using System;
-using Sanford.Multimedia.Midi;
 
 public class PlayerCtrl : MonoBehaviour
 {        
     // Leaving for now. TODO: remove this at some point?
     public bool noteCtrlOn = true;
 
-    public int minMidiNote = 36;
+    public int minMidiNote = 36;                                // Note Range for Theremini (Configurable in Theremini settings)
     public int maxMidiNote = 72;
 
-    public GameObject completedMessagePrefab;
-    public GameObject completedMenuPrefab;
+    public int startDelay;                                      // How long to wait before starting system
+    public TimerCtrl timer;
 
-    public string ParticipantID { get; set; }           // Participant ID
-    public string MidiScoreResource { get; set; }       // Name of file containing Midi data
-    public string MidiInputDeviceName { get; set; }     // Name of Midi Device to connect to
+    public GameObject completedMenuPrefab;                      // Menu Prefab to instantiate when a score is completed
 
-    public LogWriter Logger { get; private set; }
-    public MidiInputCtrl MidiIn { get; private set; }   // Main Midi Input Controller used to position left and right hands
+    // Start Menu Input Items
+    public string ParticipantID { get; set; }                   // Participant ID
+    public string SessionNum { get; set; }                      // Session Number - to help keep track of log files
+    public string MidiScoreResource { get; set; }               // Name of file containing Midi data
+    public string MidiInputDeviceName { get; set; }             // Name of Midi Device to connect to
 
-    public static PlayerCtrl Control { get; private set; }     // Singleton Accessor
+    // VRMin Components
+    public static PlayerCtrl Control { get; private set; }      // Singleton Accessor
+    public LogWriter Logger { get; private set; }               // Logger
+    public MidiInputCtrl MidiIn { get; private set; }           // Main Midi Input Controller used to position left and right hands
 
-    private GameObject completedMessage;
-    private GameObject completedMenu;
+    private GameObject completedMenu;                           // The instantiated completed menu game object
 
     void Awake ()
     {
@@ -47,43 +47,41 @@ public class PlayerCtrl : MonoBehaviour
         Logger = new LogWriter();
     }
 
-    public bool StartVRMin()
+    public void StartVRMin()
     {
-        // Start Up the Logger
-        Logger.Start(string.Format("p{0}-midi-logger", ParticipantID));
-
-        //Start Up the Midi Controllers
-        MidiIn.Connect(MidiInputDeviceName);
+        // Only need to startup these items once per at the beginning
+        Logger.Start(string.Format("p{0}-session{1}-midi-log", ParticipantID, SessionNum));      // Start Up the Logger
+        MidiIn.Connect(MidiInputDeviceName);                                                     // Connect to the Midi Device
         MidiIn.Start();
 
-        // Start Playing
-        NoteCtrl.Control.MidiScoreFile = MidiScoreResource;
-        NoteCtrl.Control.PlayMidi(NoteCtrl.MidiStatus.Play);
-
-        return true;
+        // Start Notes on a Delay
+        StartCoroutine(DelayedStart(startDelay));  
     }
 
-    public bool StartNewScore()
+    public void StartNewScore()
     {
+        StartCoroutine(DelayedStart(startDelay));
+    }
+
+    private IEnumerator DelayedStart(int delay)
+    {
+        timer.StartProgressBar(delay, "Starting");
+        yield return new WaitForSecondsRealtime(delay);
+
+        // Start Playing notes
         NoteCtrl.Control.MidiScoreFile = MidiScoreResource;
         NoteCtrl.Control.PlayMidi(NoteCtrl.MidiStatus.Play);
-
-        Destroy(completedMessage);
-
-        return true;
     }
 
     public void MidiComplete()
     {   
         //instatiate completed menu and set player controller to this
         completedMenu = Instantiate(completedMenuPrefab);
-
-        // instatiate completed message for the user
-        completedMessage = Instantiate(completedMessagePrefab);
     }
 
     void OnDisable()
     {
+        // Clean up when controller is destroyed
         if(MidiIn != null)
             MidiIn.StopAndClose();
         if (Logger != null)

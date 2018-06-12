@@ -6,6 +6,7 @@ using UnityEngine.UI;
 public class CurrentNote : MonoBehaviour, ISubscriber<NoteMessage> {
 
     public GameObject nextNoteObj;
+    public TimerCtrl timer;
 
     public Vector3 nextNoteStart;
     public Vector3 nextNoteStop;
@@ -56,48 +57,10 @@ public class CurrentNote : MonoBehaviour, ISubscriber<NoteMessage> {
 
     private void updateNotes()
     {
-        noteTxt.text = currentNote.NoteNumber != -1 ? string.Format("{0}", Utilities.Midi2NoteStr(currentNote.NoteNumber)) : string.Format("");
-        
-        if (currentNote.NoteNumber != -1)
-        {
-            started = true;
-            StartMove();
-
-            int nextNote = currentNote.NextNoteNumber;
-            nextNoteTxt.text = nextNote != -1 ? string.Format("{0}", Utilities.Midi2NoteStr(nextNote)) : string.Format("Fin");
-        }
-        else
-        {
-            nextNoteTxt.text = string.Format("");
-            started = false;
-        }
-
-    }
-
-
-    private void StartMove()
-    {
-        distCovered = 0;
-        numFrames = (int)(currentNote.Length / Time.fixedDeltaTime);
-        distPerFrame = distPerFrame = Vector3.Distance(nextNoteStart, nextNoteStop) / numFrames;
-        started = true;
-
-        scale = new Vector3(.1f, .1f, .1f);
-        scaleInc = (.45f - .1f) / numFrames; 
-    }
-
-    private void FixedUpdate()
-    {
-        if (started){
-            distCovered += distPerFrame;
-            RectTransform rect = nextNoteObj.GetComponent<RectTransform>();
-            rect.localPosition = Vector3.Lerp(nextNoteStart, nextNoteStop, distCovered / (numFrames * distPerFrame));
-
-            scale.x += scaleInc;
-            scale.y += scaleInc;
-            scale.z += scaleInc;
-
-            rect.localScale = scale;
-        }
+        timer.StartProgressBar(currentNote.Length);
+        noteTxt.text = currentNote.NoteNumber != -1 ? string.Format("{0}", Utilities.Midi2NoteStr(currentNote.NoteNumber)) 
+                                                    : string.Format("Session Complete");
+        nextNoteTxt.text = currentNote.NoteNumber != -1 && currentNote.NextNoteNumber != -1  ? string.Format("next: {0}", Utilities.Midi2NoteStr(currentNote.NextNoteNumber, 24)) 
+                                                                                             : string.Format("");
     }
 }
