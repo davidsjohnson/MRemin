@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.SceneManagement;
 using System.Collections;
 
 public class PlayerCtrl : MonoBehaviour
@@ -8,6 +9,9 @@ public class PlayerCtrl : MonoBehaviour
 
     public int minMidiNote = 36;                                // Note Range for Theremini (Configurable in Theremini settings)
     public int maxMidiNote = 72;
+
+    public int pitchMidiChannel = 20;
+    public int volMidiChannel = 2;
 
     public int startDelay;                                      // How long to wait before starting system
     public TimerCtrl timer;
@@ -54,8 +58,9 @@ public class PlayerCtrl : MonoBehaviour
         MidiIn.Connect(MidiInputDeviceName);                                                     // Connect to the Midi Device
         MidiIn.Start();
 
+
         // Start Notes on a Delay
-        StartCoroutine(DelayedStart(startDelay));  
+        StartCoroutine(DelayedStart(startDelay));
     }
 
     public void StartNewScore()

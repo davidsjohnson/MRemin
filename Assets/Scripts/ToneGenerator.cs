@@ -38,6 +38,8 @@ public class ToneGenerator : ISubscriber<NoteMessage>, ISampleProvider
 
     public SignalGenerator signalGenerator;
 
+    private bool started = false;
+
     public ToneGenerator(NoteCtrl noteCtrl, int sampleRate, int channels)
     {
         noteCtrl.Subscribe(this);
@@ -53,6 +55,7 @@ public class ToneGenerator : ISubscriber<NoteMessage>, ISampleProvider
     // ISubscriber Interface
     public void Notify(NoteMessage midiNote)
     {
+        started = true;
         Frequency = Utilities.Midi2Freq(midiNote.NoteNumber);
         signalGenerator.Frequency = Frequency;
     }
@@ -63,8 +66,10 @@ public class ToneGenerator : ISubscriber<NoteMessage>, ISampleProvider
 
     public int Read(float[] buffer, int offset, int count)
     {
-        float[] tmpBuffer = new float[count];
-        signalGenerator.Read(buffer, offset, count);
+        if (started)
+        {
+            signalGenerator.Read(buffer, offset, count);
+        }
 
         return 0;
     }
