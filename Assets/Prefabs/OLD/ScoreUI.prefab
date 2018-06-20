@@ -77,6 +77,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   nextNoteObj: {fileID: 1989137762688464}
+  timer: {fileID: 0}
   nextNoteStart: {x: 200, y: 35, z: 20}
   nextNoteStop: {x: 273, y: 35, z: -0.2}
 --- !u!114 &114144812206987386

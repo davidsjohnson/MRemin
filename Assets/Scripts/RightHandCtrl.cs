@@ -8,8 +8,6 @@ public class RightHandCtrl : MonoBehaviour, ISubscriber<ChannelMessage> {
     public float minPosition;
     public float maxPosition;
 
-    public int pitchChannel = 20;
-
     private int minMidiVal = 0;
     private int maxMidiVal = 127;
 
@@ -17,9 +15,10 @@ public class RightHandCtrl : MonoBehaviour, ISubscriber<ChannelMessage> {
 	// Use this for initialization
 	void Start ()
     {
-        // Change Right Hand to "OK" position
+
         Animator rhAnimator = GetComponent<Animator>();
         rhAnimator.SetTrigger(Animator.StringToHash("OK"));
+
 
         PlayerCtrl.Control.MidiIn.Subscribe(this);
 	}
@@ -36,7 +35,7 @@ public class RightHandCtrl : MonoBehaviour, ISubscriber<ChannelMessage> {
         int value = message.Data2;
         int ts = message.Timestamp;
 
-        if (channel == pitchChannel)
+        if (channel == PlayerCtrl.Control.pitchMidiChannel)
         {
             //UnityEngine.Debug.Log(string.Format("Pitch: {0}", value));
             //UnityEngine.Debug.Log(string.Format("Volume: {0}", value));
@@ -47,8 +46,6 @@ public class RightHandCtrl : MonoBehaviour, ISubscriber<ChannelMessage> {
             Vector3 tmp = transform.localPosition;
             tmp.x = newPosition;
             transform.localPosition = tmp;
-
-            PlayerCtrl.Control.Logger.Log("{0}\t{1}\t{2}", channel, value, ts);
         }
     }
 }

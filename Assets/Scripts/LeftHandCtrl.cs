@@ -8,8 +8,6 @@ public class LeftHandCtrl : MonoBehaviour, ISubscriber<ChannelMessage>
     public float minPosition;
     public float maxPosition;
 
-    public int volumeChannel = 2;
-
     private int minMidiVal = 0;
     private int maxMidiVal = 127;
 
@@ -30,7 +28,7 @@ public class LeftHandCtrl : MonoBehaviour, ISubscriber<ChannelMessage>
         int value = message.Data2;
         int ts = message.Timestamp;
 
-        if (channel == volumeChannel)
+        if (channel == PlayerCtrl.Control.volMidiChannel)
         {
             // UnityEngine.Debug.Log(string.Format("Volume: {0}", value));
             // Calc new position value from Midi data
@@ -40,8 +38,6 @@ public class LeftHandCtrl : MonoBehaviour, ISubscriber<ChannelMessage>
             Vector3 tmp = transform.localPosition;
             tmp.y = newPosition;
             transform.localPosition = tmp;
-
-            PlayerCtrl.Control.Logger.Log("{0}\t{1}\t{2}", channel, value, ts);
         }
     }
 }
