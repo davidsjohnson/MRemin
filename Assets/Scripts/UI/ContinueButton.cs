@@ -27,7 +27,7 @@ public class ContinueButton : MonoBehaviour {
         if (string.IsNullOrEmpty(PlayerCtrl.Control.SessionNum))
             throw new System.ArgumentException("No Session Num provided");
 
-        PlayerCtrl.Control.StartNewScore();
+        PlayerCtrl.Control.StartVRMin();
 
         Destroy(parentCanvas);
     }

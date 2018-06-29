@@ -37,14 +37,18 @@ public class MidiInputCtrl : IPublisher<ChannelMessage>
             midiInput.StartRecording();
     }
 
-    public void StopAndClose()
+    public void StopAndClose(bool clear_subs = true)
     {
-        for (int i = 0; i < subscribers.Count; ++i)
+        if (clear_subs)
         {
-            subscribers[i] = null;
+            for (int i = 0; i < subscribers.Count; ++i)
+            {
+                subscribers[i] = null;
+            }
         }
         if (midiInput != null)
         {
+            midiInput.ChannelMessageReceived -= HandleChannelMessageReceived;
             midiInput.StopRecording();
             midiInput.Close();
         }

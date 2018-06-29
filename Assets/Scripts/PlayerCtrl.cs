@@ -23,7 +23,19 @@ public class PlayerCtrl : MonoBehaviour
     public string ParticipantID { get; set; }                   // Participant ID
     public string SessionNum { get; set; }                      // Session Number - to help keep track of log files
     public string MidiScoreResource { get; set; }               // Name of file containing Midi data
-    public string MidiInputDeviceName { get; set; }             // Name of Midi Device to connect to
+
+    private string midiInputDeviceName;                          // Name of Midi Device to connect to
+    public string MidiInputDeviceName                            // Connect to Midi Device as soon as value set (close previous device if there is one)
+    {
+        get { return midiInputDeviceName; }
+        set
+        {
+            midiInputDeviceName = value;
+            MidiIn.StopAndClose(false);
+            MidiIn.Connect(midiInputDeviceName);
+            MidiIn.Start();
+        }
+    }
 
     // VRMin Components
     public static PlayerCtrl Control { get; private set; }      // Singleton Accessor
@@ -54,20 +66,8 @@ public class PlayerCtrl : MonoBehaviour
 
     public void StartVRMin()
     {
-        // Only need to startup these items once per at the beginning
-        MidiIn.Connect(MidiInputDeviceName);           // Connect to the Midi Device
-        MidiIn.Start();
-
         Logger.Start(string.Format("p{0}-session{1}-score{2}", ParticipantID, SessionNum, Path.GetFileNameWithoutExtension(MidiScoreResource)));      // Start Up the Logger
-
-        // Start Notes on a Delay
-        StartCoroutine(DelayedStart(startDelay));
-    }
-
-    public void StartNewScore()
-    {
-        Logger.Start(string.Format("p{0}-session{1}-score{2}", ParticipantID, SessionNum, Path.GetFileNameWithoutExtension(MidiScoreResource)));      // Start Up the Logger
-        StartCoroutine(DelayedStart(startDelay));
+        StartCoroutine(DelayedStart(startDelay));   // Start Notes on a Delay
     }
 
     private IEnumerator DelayedStart(int delay)
