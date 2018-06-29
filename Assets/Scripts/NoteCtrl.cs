@@ -71,7 +71,7 @@ public class NoteCtrl : MonoBehaviour, IPublisher<NoteMessage>
 
     // assuming 4/4 time signature and 120 BPM 
     // (don't need to support any other signatures for this super simple sequencer)
-    private const int TEMPO = 120;
+    private const int TEMPO = 30;
     private int ppq;                // pulses per quarter (from MidiFile)
 
 

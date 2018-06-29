@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.SceneManagement;
 using System.Collections;
+using System.IO;
 
 public class PlayerCtrl : MonoBehaviour
 {        
@@ -54,10 +55,10 @@ public class PlayerCtrl : MonoBehaviour
     public void StartVRMin()
     {
         // Only need to startup these items once per at the beginning
-        Logger.Start(string.Format("p{0}-session{1}-midi-log", ParticipantID, SessionNum));      // Start Up the Logger
-        MidiIn.Connect(MidiInputDeviceName);                                                     // Connect to the Midi Device
+        MidiIn.Connect(MidiInputDeviceName);           // Connect to the Midi Device
         MidiIn.Start();
 
+        Logger.Start(string.Format("p{0}-session{1}-score{2}", ParticipantID, SessionNum, Path.GetFileNameWithoutExtension(MidiScoreResource)));      // Start Up the Logger
 
         // Start Notes on a Delay
         StartCoroutine(DelayedStart(startDelay));
@@ -65,6 +66,7 @@ public class PlayerCtrl : MonoBehaviour
 
     public void StartNewScore()
     {
+        Logger.Start(string.Format("p{0}-session{1}-score{2}", ParticipantID, SessionNum, Path.GetFileNameWithoutExtension(MidiScoreResource)));      // Start Up the Logger
         StartCoroutine(DelayedStart(startDelay));
     }
 
@@ -73,6 +75,7 @@ public class PlayerCtrl : MonoBehaviour
         timer.StartProgressBar(delay, "Starting");
         yield return new WaitForSecondsRealtime(delay);
 
+        Logger.Log("StartSession\t{0}", Path.GetFileNameWithoutExtension(MidiScoreResource));
         // Start Playing notes
         NoteCtrl.Control.MidiScoreFile = MidiScoreResource;
         NoteCtrl.Control.PlayMidi(NoteCtrl.MidiStatus.Play);
@@ -82,6 +85,7 @@ public class PlayerCtrl : MonoBehaviour
     {   
         //instatiate completed menu and set player controller to this
         completedMenu = Instantiate(completedMenuPrefab);
+        Logger.Stop();
     }
 
     void OnDisable()

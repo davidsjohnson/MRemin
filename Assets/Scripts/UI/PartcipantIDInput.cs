@@ -11,6 +11,7 @@ public class PartcipantIDInput : MonoBehaviour {
     {
         inputField = GetComponent<InputField>();
         inputField.onEndEdit.AddListener(delegate { OnEndEditHandler(inputField); });
+        PlayerCtrl.Control.ParticipantID = null;
     }
 
 

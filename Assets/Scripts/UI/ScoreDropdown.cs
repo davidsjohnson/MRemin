@@ -20,6 +20,7 @@ public class ScoreDropdown : MonoBehaviour {
         dropdown = GetComponent<Dropdown>();
         dropdown.AddOptions(MidiScores);
         dropdown.onValueChanged.AddListener(delegate { OnValueChangedHandler(dropdown); });
+        PlayerCtrl.Control.MidiScoreResource = null;
 	}
 
     private void OnValueChangedHandler(Dropdown change)
@@ -35,7 +36,7 @@ public class ScoreDropdown : MonoBehaviour {
             if (midiScoreFiles == null)
             {
                 midiScoreFiles = new List<string>();
-                Directory.GetFiles(scorePath).Where(file => file.EndsWith(".bytes")).
+                Directory.GetFiles(scorePath).Where(file => file.EndsWith(".bytes") || file.EndsWith(".midi") || file.EndsWith(".mid")).
                     ToList().ForEach(path => midiScoreFiles.Add(Path.GetFileName(path)));
                 //foreach (var path in Directory.GetFiles(scorePath).Where(file => file.EndsWith(".bytes")))
                 //{

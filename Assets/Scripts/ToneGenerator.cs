@@ -55,9 +55,15 @@ public class ToneGenerator : ISubscriber<NoteMessage>, ISampleProvider
     // ISubscriber Interface
     public void Notify(NoteMessage midiNote)
     {
-        started = true;
-        Frequency = Utilities.Midi2Freq(midiNote.NoteNumber);
-        signalGenerator.Frequency = Frequency;
+        if (midiNote.NoteNumber != -1)
+        {
+            started = true;
+            Frequency = Utilities.Midi2Freq(midiNote.NoteNumber);
+        }
+        else
+        {
+            started = false;
+        }
     }
 
     // ISample Provider Interface

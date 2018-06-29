@@ -21,6 +21,12 @@ public class ContinueButton : MonoBehaviour {
         if (string.IsNullOrEmpty(PlayerCtrl.Control.MidiScoreResource))
             throw new System.ArgumentException("No MIDI score provided");
 
+        if (string.IsNullOrEmpty(PlayerCtrl.Control.ParticipantID))
+            throw new System.ArgumentException("No Participant ID provided");
+
+        if (string.IsNullOrEmpty(PlayerCtrl.Control.SessionNum))
+            throw new System.ArgumentException("No Session Num provided");
+
         PlayerCtrl.Control.StartNewScore();
 
         Destroy(parentCanvas);
