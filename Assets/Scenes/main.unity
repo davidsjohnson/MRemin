@@ -570,6 +570,11 @@ Prefab:
       value: 
       objectReference: {fileID: 243883750430360446, guid: 486bb9aa8cef352419db374dce0d9cc0,
         type: 2}
+    - target: {fileID: 114347265354093928, guid: 2c062b7ee6e3e604b869de6f9f00280d,
+        type: 2}
+      propertyPath: noteCtrlOn
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 2c062b7ee6e3e604b869de6f9f00280d, type: 2}
   m_IsPrefabParent: 0
@@ -640,6 +645,18 @@ Prefab:
         type: 2}
       propertyPath: m_Enabled
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4989908873790024, guid: f4f7181e993a24c43b78bf0a00c751e0, type: 2}
+      propertyPath: m_LocalScale.x
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 4989908873790024, guid: f4f7181e993a24c43b78bf0a00c751e0, type: 2}
+      propertyPath: m_LocalScale.z
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 1000010004664370, guid: f4f7181e993a24c43b78bf0a00c751e0, type: 2}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 114212529514591228, guid: f4f7181e993a24c43b78bf0a00c751e0, type: 2}
