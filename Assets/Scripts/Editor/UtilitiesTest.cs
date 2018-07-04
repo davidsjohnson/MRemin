@@ -108,7 +108,14 @@ public class UtilitiesTest {
     [Test]
     public void ValidateHandPosition()
     {
-        float midiNote = Utilities.MapValue(1, 0, 127, 36, 71);
+
+        float[] midiNotes = { 36, 42, 48, 54, 60, 66, 72 };
+
+        foreach (var note in midiNotes)
+        {
+
+        }
+        float midiNote = Utilities.MapValue(1, 0, 127, 36, 72);
 
         Debug.Log("Midi Note: " + midiNote);
 

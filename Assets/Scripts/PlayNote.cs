@@ -83,8 +83,15 @@ public class PlayNote : MonoBehaviour, ISubscriber<NoteMessage> {
 			newScale.x += changeSize;
 			newScale.z += changeSize;
 			currentStep++;
-			transform.parent.transform.localScale = newScale;
-		}
+
+            // Detach from parent so collider doesn't scale with NoteRing
+            Transform parent = transform.parent;
+            Vector3 localPos = transform.localPosition;
+            transform.parent = null;
+			parent.transform.localScale = newScale;
+            transform.parent = parent;
+            transform.localPosition = localPos;
+        }
 	}
 		
     /*
