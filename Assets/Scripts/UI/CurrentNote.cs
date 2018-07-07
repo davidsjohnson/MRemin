@@ -6,7 +6,7 @@ using UnityEngine.UI;
 public class CurrentNote : MonoBehaviour, ISubscriber<NoteMessage> {
 
     public GameObject nextNoteObj;
-    public TimerCtrl timer;
+    public ProgressBarCtrl timer;
 
     public Vector3 nextNoteStart;
     public Vector3 nextNoteStop;
@@ -57,10 +57,20 @@ public class CurrentNote : MonoBehaviour, ISubscriber<NoteMessage> {
 
     private void updateNotes()
     {
+        if (currentNote.IsStartMessage)
+        {
+            noteTxt.text = string.Format("Starting");
+            nextNoteTxt.text = string.Format("next: {0}", Utilities.Midi2NoteStr(currentNote.NextNoteNumber, 24));
+        }
+        else if (currentNote.IsEndMessage)
+        {
+            noteTxt.text = string.Format("Session Complete");
+        }
+        else
+        {
+            noteTxt.text = string.Format("{0}", Utilities.Midi2NoteStr(currentNote.NoteNumber));
+            nextNoteTxt.text = !currentNote.IsLastNote ? string.Format("next: {0}", Utilities.Midi2NoteStr(currentNote.NextNoteNumber, 24)) : "";
+        }
         timer.StartProgressBar(currentNote.Length);
-        noteTxt.text = currentNote.NoteNumber != -1 ? string.Format("{0}", Utilities.Midi2NoteStr(currentNote.NoteNumber)) 
-                                                    : string.Format("Session Complete");
-        nextNoteTxt.text = currentNote.NoteNumber != -1 && currentNote.NextNoteNumber != -1  ? string.Format("next: {0}", Utilities.Midi2NoteStr(currentNote.NextNoteNumber, 24)) 
-                                                                                             : string.Format("");
     }
 }

@@ -3,25 +3,22 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class TimerCtrl : MonoBehaviour {
+public class ProgressBarCtrl : MonoBehaviour {
 
     private Image progressBar;
-    public Text text;
 
     // Use this for initialization
     void Start ()
     {
         progressBar = GetComponent<Image>(); 
     }
-	
 
     /*
      * Used to display starting message before Midi Score kicks off
      */
-    public void StartProgressBar(float delay, string message="")
+    public void StartProgressBar(float delay)
     {
         StopCoroutine("UpdateProgressBar");
-        text.text = message;
         StartCoroutine("UpdateProgressBar", delay);
     }
 

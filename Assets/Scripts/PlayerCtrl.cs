@@ -15,7 +15,8 @@ public class PlayerCtrl : MonoBehaviour
     public int volMidiChannel = 2;
 
     public int startDelay;                                      // How long to wait before starting system
-    public TimerCtrl timer;
+    //public TimerCtrl timer;
+    //public NextNoteArrowCtrl nextArrow;
 
     public GameObject completedMenuPrefab;                      // Menu Prefab to instantiate when a score is completed
 
@@ -72,12 +73,11 @@ public class PlayerCtrl : MonoBehaviour
 
     private IEnumerator DelayedStart(int delay)
     {
-        timer.StartProgressBar(delay, "Starting");
+        NoteCtrl.Control.MidiScoreFile = MidiScoreResource;     // Set Score before delay to trigger start message
         yield return new WaitForSecondsRealtime(delay);
 
         Logger.Log("StartSession\t{0}", Path.GetFileNameWithoutExtension(MidiScoreResource));
         // Start Playing notes
-        NoteCtrl.Control.MidiScoreFile = MidiScoreResource;
         NoteCtrl.Control.PlayMidi(NoteCtrl.MidiStatus.Play);
     }
 

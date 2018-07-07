@@ -1,8 +1,7 @@
-﻿using System.Collections;
+﻿using NAudio.Midi;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using NAudio.Midi;
-using System;
 
 
 public class NoteMessage
@@ -10,19 +9,19 @@ public class NoteMessage
     public int NoteNumber { get; private set; }
     public int NextNoteNumber { get; private set; }
     public float Length { get; private set; }
+    public bool IsStartMessage { get; private set; }
+    public bool IsLastNote { get; private set; }
+    public bool IsEndMessage { get; private set; }
 
-    public NoteMessage(int noteNumber, int nextNoteNumber, float length)
+    public NoteMessage(int noteNumber, int nextNoteNumber = -1, float length = -1)
     {
         NoteNumber = noteNumber;
         NextNoteNumber = nextNoteNumber;
         Length = length;
-    }
 
-    public NoteMessage(int noteNumber)
-    {
-        NoteNumber = noteNumber;
-        NextNoteNumber = -1;
-        Length = -1;
+        IsEndMessage = NoteNumber == -1 && NextNoteNumber == -1;
+        IsStartMessage = NoteNumber == -1 && NextNoteNumber != -1;
+        IsLastNote = NoteNumber != -1 && NextNoteNumber == -1;
     }
 }
 
@@ -42,7 +41,7 @@ public class NoteCtrl : MonoBehaviour, IPublisher<NoteMessage>
         {
             return currentNote;
         }
-        set
+        private set
         {
             currentNote = value;
             SendNotifications(currentNote);
@@ -97,6 +96,29 @@ public class NoteCtrl : MonoBehaviour, IPublisher<NoteMessage>
         mf = new MidiFile(MidiScoreFile, strictMode);
         ppq = mf.DeltaTicksPerQuarterNote;
         ScoreLoaded = true;
+
+        //Find first note
+        var track = mf.Events[0];  // MIDI Files for VRMIN should only have one track
+        int eventIdx = 0;
+        NoteOnEvent firstNoteEvent = null;
+        foreach (var midiEvent in track)
+        {
+            if (MidiEvent.IsNoteOn(midiEvent))
+            {
+                firstNoteEvent = (NoteOnEvent)midiEvent;
+                break;
+            }
+        }
+
+        if (firstNoteEvent != null)
+        {
+            CurrentNote = new NoteMessage(-1, firstNoteEvent.NoteNumber, PlayerCtrl.Control.startDelay);
+        }
+        else
+        {
+            throw new System.ArgumentException("No Data in loaded Score");
+        }
+        
     }
 
     public void PlayMidi(MidiStatus midiStatus)
