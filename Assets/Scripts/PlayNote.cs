@@ -6,33 +6,31 @@ using System;
 
 public class PlayNote : MonoBehaviour, ISubscriber<NoteMessage> {
 
-    // Max and min Y values for the note ring
-    public float minSize;
+    
+    public float minSize;               // Max and min Y values for the note ring
     public float maxSize;
-
-
-    // Number of steps for note size transition animation
-    public int changeSteps = 20;
-
-    // Material to use when the hand is in the correct locatoin
-    public Material playedMaterial;
+    public int changeSteps = 20;        // Number of steps for note size transition animation
+    public float resizeTime = 0.5f;
+    public Material playedMaterial;     // Material to use when the hand is in the correct location
+    public NextNoteArrowCtrl nextNoteArrow;    // Note Arrow to move when notes change
 
     // Private Members
     private float minFreq;
     private float maxFreq;
 
-
     private Material orgMaterial;
-
-	private float changeSize = 0;
-    private int currentStep = 0;
 
     /*
      * Required method for ISubscriber Interface to handle note change updates
      */
     public void Notify(NoteMessage midiNote)
     {
-        NextNote(midiNote.NoteNumber);
+        if (!midiNote.IsStartMessage)
+        {
+            StopCoroutine("ResizeRing");
+            StartCoroutine("ResizeRing", midiNote);
+        }
+        
     }
 
     public void Notify(string midiNote)
@@ -41,7 +39,6 @@ public class PlayNote : MonoBehaviour, ISubscriber<NoteMessage> {
         int.TryParse(midiNote, out temp);
         Notify(new NoteMessage(temp));
     }
-
 
     void Awake()
     {
@@ -54,65 +51,25 @@ public class PlayNote : MonoBehaviour, ISubscriber<NoteMessage> {
         // Calculate min and max frequencies of the Theremin (based on max and min midi notes)
         minFreq = Utilities.Midi2Freq(PlayerCtrl.Control.minMidiNote);
         maxFreq = Utilities.Midi2Freq(PlayerCtrl.Control.maxMidiNote);
-
-        NextNote(63);
     }
 
 	void OnTriggerEnter(Collider other)
     {
         // if a hand enters target update color to indicating hand is in correct location
-		if (other.tag == "Hand"){
+		if (other.tag == "Hand")
+        {
 			transform.parent.gameObject.GetComponent<Renderer>().material = playedMaterial;
 		}
 	}
 
-	void OnTriggerExit(Collider other)
+    void OnTriggerExit(Collider other)
     {
         // if a hand leaves target update color to indicating hand is not in the correct location
-        if (other.tag == "Hand"){
-			transform.parent.gameObject.GetComponent<Renderer>().material = orgMaterial;
-		}	
-	}
-
-	void Update()
-    {
-        // incrementally update the size of the Note ring if needed to provide a smooth 
-        // transition to the next note
-		if (currentStep < changeSteps && changeSize != 0) {
-			Vector3 newScale = transform.parent.transform.localScale;
-			newScale.x += changeSize;
-			newScale.z += changeSize;
-			currentStep++;
-
-            // Detach from parent so collider doesn't scale with NoteRing
-            Transform parent = transform.parent;
-            Vector3 localPos = transform.localPosition;
-            transform.parent = null;
-			parent.transform.localScale = newScale;
-            transform.parent = parent;
-            transform.localPosition = localPos;
-        }
-	}
-		
-    /*
-     * Start the transition of the ring to the next note 
-     */
-	void NextNote(int midiNote)
-    {
-        if (midiNote != -1)
+        if (other.tag == "Hand")
         {
-            //change note and note size
-            transform.parent.gameObject.GetComponent<Renderer>().material = orgMaterial;    // reset to original material 
-            currentStep = 0;                                                                // Reset step since we're starting size change animation 
-            Vector3 newScale = CalculateNoteScale(midiNote);
-            float scaleDiff = newScale.x - transform.parent.transform.localScale.x;         // Find amount ring needs to resize
-            changeSize = scaleDiff / changeSteps;                                           // amount ring should change at each update until complete
+            transform.parent.gameObject.GetComponent<Renderer>().material = orgMaterial;
         }
-        else
-        {
-            PlayerCtrl.Control.MidiComplete();
-        }
-	}
+    }
 
     /*
      * Calculate the correct scale for a given midi Note
@@ -123,5 +80,45 @@ public class PlayNote : MonoBehaviour, ISubscriber<NoteMessage> {
         float newXZ = Utilities.MapValue(freq, maxFreq, minFreq, minSize, maxSize);
         //float newXZ = Utilities.MapValue(midiNote, maxNote, minNote, minSize, maxSize);
         return new Vector3(newXZ, 0.1f, newXZ);
+    }
+
+    private IEnumerator ResizeRing(NoteMessage message)
+    {
+        int midiNote = message.NoteNumber;
+
+        if (message.IsEndMessage)
+        {
+            PlayerCtrl.Control.MidiComplete();
+            yield break;
+        }
+            
+        //change note and note size
+        transform.parent.gameObject.GetComponent<Renderer>().material = orgMaterial;    // reset to original material 
+
+        Vector3 newScale = CalculateNoteScale(midiNote);
+        float scaleDiff = newScale.x - transform.parent.transform.localScale.x;         // Find amount ring needs to resize
+        float startPos = transform.parent.transform.localScale.x;
+
+        float i = 0;
+        float resizeRate = 1f / resizeTime;
+        while (i < 1)
+        {
+            i += Time.fixedDeltaTime * resizeRate;
+
+            Vector3 nextScale = transform.parent.transform.localScale;
+            nextScale.x = startPos + (i * scaleDiff);
+            nextScale.z = startPos + (i * scaleDiff);
+
+            // Detach from parent so collider doesn't scale with NoteRing
+            Transform parent = transform.parent;
+            Vector3 localPos = transform.localPosition;
+            transform.parent = null;
+            parent.transform.localScale = nextScale;
+            transform.parent = parent;
+            transform.localPosition = localPos;
+
+            yield return new WaitForFixedUpdate();
+        }
+        nextNoteArrow.StartRotate();
     }
 }
