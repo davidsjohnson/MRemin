@@ -12,7 +12,7 @@ public class ScoreDropdown : MonoBehaviour {
 
     private List<string> midiScoreFiles;
 
-    private const string scorePath = "Assets/Resources/";
+    private const string scorePath = "C:\\Users\\david\\Documents\\projects\\VRmin-UserStudy\\Scores\\";
 
 	void Start ()
     {
