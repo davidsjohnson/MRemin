@@ -12,10 +12,13 @@ public class ScoreDropdown : MonoBehaviour {
 
     private List<string> midiScoreFiles;
 
-    private const string scorePath = "C:\\Users\\david\\Documents\\projects\\VRmin-UserStudy\\Scores\\";
+    private string scorePath;
 
 	void Start ()
     {
+        scorePath = PlayerCtrl.Control.vrIsFirst ? "C:\\Users\\david\\Documents\\projects\\VRmin-UserStudy\\Scores\\VR-First" :
+                                                   "C:\\Users\\david\\Documents\\projects\\VRmin-UserStudy\\Scores\\Non-First";
+
         // Setup dropdown menu options and change handler
         dropdown = GetComponent<Dropdown>();
         dropdown.AddOptions(MidiScores);

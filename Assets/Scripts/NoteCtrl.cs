@@ -68,9 +68,9 @@ public class NoteCtrl : MonoBehaviour, IPublisher<NoteMessage>
     private readonly List<ISubscriber<NoteMessage>> subscribers = new List<ISubscriber<NoteMessage>>();     // List of subscribers to notify
     private IEnumerator playMidi = null;
 
-    // assuming 4/4 time signature and 120 BPM 
+    // assuming 4/4 time signature
     // (don't need to support any other signatures for this super simple sequencer)
-    private const int TEMPO = 30;
+    private float tempo;
     private int ppq;                // pulses per quarter (from MidiFile)
 
 
@@ -96,6 +96,8 @@ public class NoteCtrl : MonoBehaviour, IPublisher<NoteMessage>
         mf = new MidiFile(MidiScoreFile, strictMode);
         ppq = mf.DeltaTicksPerQuarterNote;
         ScoreLoaded = true;
+
+        tempo = PlayerCtrl.Control.tempo;
 
         //Find first note
         var track = mf.Events[0];  // MIDI Files for VRMIN should only have one track
@@ -169,7 +171,7 @@ public class NoteCtrl : MonoBehaviour, IPublisher<NoteMessage>
 
                 //build Note Message
                 int nextNote = nextIdx != track.Count ? ((NoteOnEvent)track[nextIdx]).NoteNumber : -1;  // if we reached the end without a Note on then send -1
-                float length = (noteOn.NoteLength / ppq) *  60 / TEMPO;                                 // Note length in seconds
+                float length = (noteOn.NoteLength / ppq) *  60 / tempo;                                 // Note length in seconds
                 CurrentNote = new NoteMessage(noteOn.NoteNumber, nextNote, length);
 
                 Debug.Log("Note Length: " + length);
