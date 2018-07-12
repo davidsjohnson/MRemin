@@ -8,11 +8,15 @@ public class PlayerCtrl : MonoBehaviour
     // Leaving for now. TODO: remove this at some point?
     public bool noteCtrlOn = true;
 
+    public bool vrIsFirst = true;
+
     public int minMidiNote = 36;                                // Note Range for Theremini (Configurable in Theremini settings)
     public int maxMidiNote = 72;
 
     public int pitchMidiChannel = 20;
     public int volMidiChannel = 2;
+
+    public float tempo = 45;
 
     public int startDelay;                                      // How long to wait before starting system
     //public TimerCtrl timer;
@@ -67,7 +71,7 @@ public class PlayerCtrl : MonoBehaviour
 
     public void StartVRMin()
     {
-        Logger.Start(string.Format("p{0}-session{1}-score{2}", ParticipantID, SessionNum, Path.GetFileNameWithoutExtension(MidiScoreResource)));      // Start Up the Logger
+        Logger.Start(string.Format("p{0}-session{1}-score{2}-VR", ParticipantID, SessionNum, Path.GetFileNameWithoutExtension(MidiScoreResource)));      // Start Up the Logger
         StartCoroutine(DelayedStart(startDelay));   // Start Notes on a Delay
     }
 
