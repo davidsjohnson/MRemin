@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.XR;
 using System.Collections;
 using System.IO;
 
@@ -41,6 +42,11 @@ public class PlayerCtrl : MonoBehaviour
             MidiIn.Start();
         }
     }
+    private bool useVRmin = true;
+    public bool UseVRmin {
+        get { return useVRmin; }
+        set { useVRmin = value; }
+    }
 
     // VRMin Components
     public static PlayerCtrl Control { get; private set; }      // Singleton Accessor
@@ -51,6 +57,7 @@ public class PlayerCtrl : MonoBehaviour
 
     void Awake ()
     {
+        XRSettings.enabled = UseVRmin;
         //Implement Psuedo-Singleton
         if (Control == null)
         {
@@ -71,6 +78,24 @@ public class PlayerCtrl : MonoBehaviour
 
     public void StartVRMin()
     {
+        Scene activeScene = SceneManager.GetActiveScene();
+        if (!UseVRmin)
+        {
+            if (activeScene.name != "NonVRScene")
+            {
+                SceneManager.LoadScene("NonVRScene");
+            }  
+        }
+        else
+        {
+            if (activeScene.name != "VRminScene")
+            {
+                SceneManager.LoadScene("VRminScene");
+            }
+        }
+        Debug.Log("Enabling VR: " + UseVRmin);
+        XRSettings.enabled = UseVRmin;
+
         Logger.Start(string.Format("p{0}-session{1}-score{2}-VR", ParticipantID, SessionNum, Path.GetFileNameWithoutExtension(MidiScoreResource)));      // Start Up the Logger
         StartCoroutine(DelayedStart(startDelay));   // Start Notes on a Delay
     }
