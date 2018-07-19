@@ -40,6 +40,11 @@ public class CurrentNote : MonoBehaviour, ISubscriber<NoteMessage> {
         nextNoteTxt.text = "";
     }
 
+    private void OnDisable()
+    {
+        NoteCtrl.Control.Unsubscribe(this);
+    }
+
     public void Notify(NoteMessage midiNote)
     {
         //Update the Note string whenever a new midi note is received

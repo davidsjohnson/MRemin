@@ -90,7 +90,7 @@ GameObject:
   m_Component:
   - component: {fileID: 224335208471824384}
   - component: {fileID: 114194153793832464}
-  - component: {fileID: 114782582410382222}
+  - component: {fileID: 114067600837601774}
   m_Layer: 5
   m_Name: EnableVR
   m_TagString: Untagged
@@ -180,6 +180,7 @@ GameObject:
   - component: {fileID: 223149715163932878}
   - component: {fileID: 114072834049234998}
   - component: {fileID: 114497770483620984}
+  - component: {fileID: 114956655041749926}
   m_Layer: 5
   m_Name: Session Complete Menu
   m_TagString: Untagged
@@ -603,6 +604,17 @@ MonoBehaviour:
   m_FillAmount: 1
   m_FillClockwise: 1
   m_FillOrigin: 0
+--- !u!114 &114067600837601774
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1211158308660004}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 709263d367528324da08dd2f5be03232, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &114072834049234998
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1434,17 +1446,6 @@ MonoBehaviour:
   m_FillAmount: 1
   m_FillClockwise: 1
   m_FillOrigin: 0
---- !u!114 &114782582410382222
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1211158308660004}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 31bf507850d58d540937328bd2a03861, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &114801178916851498
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1727,6 +1728,18 @@ MonoBehaviour:
     m_VerticalOverflow: 0
     m_LineSpacing: 1
   m_Text: 'Participant #:'
+--- !u!114 &114956655041749926
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1389134157721864}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2aebab3047f2113489ca3eb8423228b6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Canvas: {fileID: 223149715163932878}
 --- !u!114 &114968681120167690
 MonoBehaviour:
   m_ObjectHideFlags: 1

@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 public class EnableVRTgl : MonoBehaviour {
 
-    private void Awake()
+    private void Start()
     {
         Toggle tgl = GetComponent<Toggle>();
         tgl.onValueChanged.AddListener(delegate { OnValueChangedHandler(tgl); });

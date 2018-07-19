@@ -17,7 +17,7 @@ public class LeftHandCtrl : MonoBehaviour, ISubscriber<ChannelMessage>
         PlayerCtrl.Control.MidiIn.Subscribe(this);
     }
 
-    void onDisable()
+    void OnDestroy()
     {
         PlayerCtrl.Control.MidiIn.Unsubscribe(this);
     }

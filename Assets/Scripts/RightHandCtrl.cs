@@ -23,7 +23,7 @@ public class RightHandCtrl : MonoBehaviour, ISubscriber<ChannelMessage> {
         PlayerCtrl.Control.MidiIn.Subscribe(this);
 	}
 
-    void onDisable()
+    void OnDisable()
     {
         PlayerCtrl.Control.MidiIn.Unsubscribe(this);
     }

@@ -20,8 +20,6 @@ public class PlayerCtrl : MonoBehaviour
     public float tempo = 45;
 
     public int startDelay;                                      // How long to wait before starting system
-    //public TimerCtrl timer;
-    //public NextNoteArrowCtrl nextArrow;
 
     public GameObject completedMenuPrefab;                      // Menu Prefab to instantiate when a score is completed
 
@@ -83,21 +81,58 @@ public class PlayerCtrl : MonoBehaviour
         {
             if (activeScene.name != "NonVRScene")
             {
-                SceneManager.LoadScene("NonVRScene");
+                StartCoroutine("SwitchTo2D");
             }  
         }
         else
         {
             if (activeScene.name != "VRminScene")
             {
-                SceneManager.LoadScene("VRminScene");
+                StartCoroutine("SwitchToVR");
             }
         }
-        Debug.Log("Enabling VR: " + UseVRmin);
-        XRSettings.enabled = UseVRmin;
+    }
 
+    private void StartSession()
+    {
         Logger.Start(string.Format("p{0}-session{1}-score{2}-VR", ParticipantID, SessionNum, Path.GetFileNameWithoutExtension(MidiScoreResource)));      // Start Up the Logger
         StartCoroutine(DelayedStart(startDelay));   // Start Notes on a Delay
+    }
+
+    private IEnumerator SwitchTo2D()
+    {
+        SceneManager.LoadScene("NonVRScene");
+        yield return null;
+        XRSettings.LoadDeviceByName("");
+        yield return null;
+        XRSettings.enabled = false;
+        yield return null;
+        StartSession();
+    }
+
+    private IEnumerator SwitchToVR()
+    {
+        SceneManager.LoadScene("VRminScene");
+        yield return null;
+        XRSettings.LoadDeviceByName("WindowsMR");
+        yield return null;
+        XRSettings.enabled = true;
+        yield return null;
+        ResetCameras();
+        yield return null;
+        StartSession();
+    }
+
+    private void ResetCameras()
+    {
+        foreach (var cam in Camera.allCameras)
+        {
+            if (cam.enabled && cam.stereoTargetEye != StereoTargetEyeMask.None)
+            {
+                cam.transform.localPosition = Vector3.zero;
+                cam.transform.localRotation = Quaternion.identity;
+            }
+        }
     }
 
     private IEnumerator DelayedStart(int delay)

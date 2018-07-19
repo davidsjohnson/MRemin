@@ -40,6 +40,11 @@ public class PlayNote : MonoBehaviour, ISubscriber<NoteMessage> {
         Notify(new NoteMessage(temp));
     }
 
+    private void OnDisable()
+    {
+        NoteCtrl.Control.Unsubscribe(this);
+    }
+
     void Awake()
     {
         // Subscribe to Note Ctrl notifications on new notes
