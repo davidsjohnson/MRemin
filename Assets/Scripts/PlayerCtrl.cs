@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.XR;
 using System.Collections;
 using System.IO;
 
@@ -19,8 +20,6 @@ public class PlayerCtrl : MonoBehaviour
     public float tempo = 45;
 
     public int startDelay;                                      // How long to wait before starting system
-    //public TimerCtrl timer;
-    //public NextNoteArrowCtrl nextArrow;
 
     public GameObject completedMenuPrefab;                      // Menu Prefab to instantiate when a score is completed
 
@@ -41,6 +40,11 @@ public class PlayerCtrl : MonoBehaviour
             MidiIn.Start();
         }
     }
+    private bool useVRmin = true;
+    public bool UseVRmin {
+        get { return useVRmin; }
+        set { useVRmin = value; }
+    }
 
     // VRMin Components
     public static PlayerCtrl Control { get; private set; }      // Singleton Accessor
@@ -51,6 +55,7 @@ public class PlayerCtrl : MonoBehaviour
 
     void Awake ()
     {
+        XRSettings.enabled = UseVRmin;
         //Implement Psuedo-Singleton
         if (Control == null)
         {
@@ -71,8 +76,77 @@ public class PlayerCtrl : MonoBehaviour
 
     public void StartVRMin()
     {
+        Scene activeScene = SceneManager.GetActiveScene();
+        if (!UseVRmin)
+        {
+            if (activeScene.name != "NonVRScene")
+            {
+                StartCoroutine("SwitchTo2D");
+            }
+            else
+            {
+                StartSession();
+            }
+        }
+        else
+        {
+            if (activeScene.name != "VRminScene")
+            {
+                StartCoroutine("SwitchToVR");
+            }
+            else
+            {
+                StartSession();
+            }
+        }
+    }
+
+    private void StartSession()
+    {
         Logger.Start(string.Format("p{0}-session{1}-score{2}-VR", ParticipantID, SessionNum, Path.GetFileNameWithoutExtension(MidiScoreResource)));      // Start Up the Logger
         StartCoroutine(DelayedStart(startDelay));   // Start Notes on a Delay
+    }
+
+    private IEnumerator SwitchTo2D()
+    {
+        var asyncLoad = SceneManager.LoadSceneAsync("NonVRScene");
+        while (!asyncLoad.isDone)
+        {
+            yield return null;
+        }
+        XRSettings.LoadDeviceByName("");
+        yield return null;
+        XRSettings.enabled = false;
+        yield return null;
+        StartSession();
+    }
+
+    private IEnumerator SwitchToVR()
+    {
+        var asyncLoad = SceneManager.LoadSceneAsync("VRminScene");
+        while (!asyncLoad.isDone)
+        {
+            yield return null;
+        }
+        XRSettings.LoadDeviceByName("WindowsMR");
+        yield return null;
+        XRSettings.enabled = true;
+        yield return null;
+        ResetCameras();
+        yield return null;
+        StartSession();
+    }
+
+    private void ResetCameras()
+    {
+        foreach (var cam in Camera.allCameras)
+        {
+            if (cam.enabled && cam.stereoTargetEye != StereoTargetEyeMask.None)
+            {
+                cam.transform.localPosition = Vector3.zero;
+                cam.transform.localRotation = Quaternion.identity;
+            }
+        }
     }
 
     private IEnumerator DelayedStart(int delay)
