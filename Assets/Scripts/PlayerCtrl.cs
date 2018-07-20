@@ -82,13 +82,21 @@ public class PlayerCtrl : MonoBehaviour
             if (activeScene.name != "NonVRScene")
             {
                 StartCoroutine("SwitchTo2D");
-            }  
+            }
+            else
+            {
+                StartSession();
+            }
         }
         else
         {
             if (activeScene.name != "VRminScene")
             {
                 StartCoroutine("SwitchToVR");
+            }
+            else
+            {
+                StartSession();
             }
         }
     }
@@ -101,8 +109,11 @@ public class PlayerCtrl : MonoBehaviour
 
     private IEnumerator SwitchTo2D()
     {
-        SceneManager.LoadScene("NonVRScene");
-        yield return null;
+        var asyncLoad = SceneManager.LoadSceneAsync("NonVRScene");
+        while (!asyncLoad.isDone)
+        {
+            yield return null;
+        }
         XRSettings.LoadDeviceByName("");
         yield return null;
         XRSettings.enabled = false;
@@ -112,8 +123,11 @@ public class PlayerCtrl : MonoBehaviour
 
     private IEnumerator SwitchToVR()
     {
-        SceneManager.LoadScene("VRminScene");
-        yield return null;
+        var asyncLoad = SceneManager.LoadSceneAsync("VRminScene");
+        while (!asyncLoad.isDone)
+        {
+            yield return null;
+        }
         XRSettings.LoadDeviceByName("WindowsMR");
         yield return null;
         XRSettings.enabled = true;

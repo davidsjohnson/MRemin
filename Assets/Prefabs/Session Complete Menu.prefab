@@ -90,7 +90,7 @@ GameObject:
   m_Component:
   - component: {fileID: 224335208471824384}
   - component: {fileID: 114194153793832464}
-  - component: {fileID: 114067600837601774}
+  - component: {fileID: 114580864149819092}
   m_Layer: 5
   m_Name: EnableVR
   m_TagString: Untagged
@@ -604,17 +604,6 @@ MonoBehaviour:
   m_FillAmount: 1
   m_FillClockwise: 1
   m_FillOrigin: 0
---- !u!114 &114067600837601774
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1211158308660004}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 709263d367528324da08dd2f5be03232, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &114072834049234998
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1059,7 +1048,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: 'EnableVR
+  m_Text: 'Use VR:min
 
 '
 --- !u!114 &114377732197092886
@@ -1264,6 +1253,17 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: d49fe62efe2043e42a06d4bc70105a35, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &114580864149819092
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1211158308660004}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4c6cea42ae67f3444990d64fb448ffb4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!114 &114581821371048074
