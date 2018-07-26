@@ -1,8 +1,15 @@
-﻿using UnityEngine;
+﻿using System.Collections;
+using System.IO;
+using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.XR;
-using System.Collections;
-using System.IO;
+
+public enum SceneType
+{
+    NoVis = 0,
+    TwoD = 1,
+    VR = 2
+}
 
 public class PlayerCtrl : MonoBehaviour
 {        
@@ -20,6 +27,12 @@ public class PlayerCtrl : MonoBehaviour
     public float tempo = 45;
 
     public int startDelay;                                      // How long to wait before starting system
+
+    // VR settings and Training Scenes
+    public string VRDeviceName = "WindowsMR";
+    public string sceneVR;
+    public string scene2D;
+    public string sceneNoVis;
 
     public GameObject completedMenuPrefab;                      // Menu Prefab to instantiate when a score is completed
 
@@ -40,10 +53,12 @@ public class PlayerCtrl : MonoBehaviour
             MidiIn.Start();
         }
     }
-    private bool useVRmin = true;
-    public bool UseVRmin {
-        get { return useVRmin; }
-        set { useVRmin = value; }
+
+    private SceneType sceneType = SceneType.VR;
+    public SceneType SceneType
+    {
+        get { return sceneType; }
+        set { sceneType = value; }
     }
 
     // VRMin Components
@@ -55,7 +70,6 @@ public class PlayerCtrl : MonoBehaviour
 
     void Awake ()
     {
-        XRSettings.enabled = UseVRmin;
         //Implement Psuedo-Singleton
         if (Control == null)
         {
@@ -76,64 +90,54 @@ public class PlayerCtrl : MonoBehaviour
 
     public void StartVRMin()
     {
-        Scene activeScene = SceneManager.GetActiveScene();
-        if (!UseVRmin)
+        switch (sceneType)
         {
-            if (activeScene.name != "NonVRScene")
-            {
-                StartCoroutine("SwitchTo2D");
-            }
-            else
-            {
-                StartSession();
-            }
-        }
-        else
-        {
-            if (activeScene.name != "VRminScene")
-            {
-                StartCoroutine("SwitchToVR");
-            }
-            else
-            {
-                StartSession();
-            }
+            case SceneType.NoVis:
+                StartCoroutine(SwitchScene(sceneNoVis, ""));
+                break;
+            case SceneType.TwoD:
+                StartCoroutine(SwitchScene(scene2D, ""));
+                break;
+            case SceneType.VR:
+                StartCoroutine(SwitchScene(sceneVR, VRDeviceName));
+                break;
         }
     }
 
     private void StartSession()
     {
-        Logger.Start(string.Format("p{0}-session{1}-score{2}-VR", ParticipantID, SessionNum, Path.GetFileNameWithoutExtension(MidiScoreResource)));      // Start Up the Logger
+        Logger.Start(string.Format("p{0}-session{1}-score{2}-scene{3}", ParticipantID, SessionNum, Path.GetFileNameWithoutExtension(MidiScoreResource), SceneType));      // Start Up the Logger
         StartCoroutine(DelayedStart(startDelay));   // Start Notes on a Delay
     }
 
-    private IEnumerator SwitchTo2D()
+    private IEnumerator SwitchScene(string sceneName, string deviceName)
     {
-        var asyncLoad = SceneManager.LoadSceneAsync("NonVRScene");
-        while (!asyncLoad.isDone)
-        {
-            yield return null;
-        }
-        XRSettings.LoadDeviceByName("");
-        yield return null;
-        XRSettings.enabled = false;
-        yield return null;
-        StartSession();
-    }
+        Scene activeScene = SceneManager.GetActiveScene();
+        bool enableVR = !string.IsNullOrEmpty(deviceName);
 
-    private IEnumerator SwitchToVR()
-    {
-        var asyncLoad = SceneManager.LoadSceneAsync("VRminScene");
-        while (!asyncLoad.isDone)
+        // Only change scenes if we're not already in that scene
+        if (activeScene.name != sceneName)
         {
-            yield return null;
+            var asyncLoad = SceneManager.LoadSceneAsync(sceneName);
+            while (!asyncLoad.isDone)
+            {
+                yield return null;
+            }
+            if ((enableVR && !XRSettings.enabled) || (!enableVR && XRSettings.enabled))
+            {
+                XRSettings.LoadDeviceByName(deviceName);
+                yield return null;
+                XRSettings.enabled = enableVR;
+                yield return null;
+            }
+
+            // We should only reset camera positions if using VR (Non VR have specific camera locations)
+            if (XRSettings.enabled)
+            {
+                ResetCameras();
+                yield return null;
+            }
         }
-        XRSettings.LoadDeviceByName("WindowsMR");
-        yield return null;
-        XRSettings.enabled = true;
-        yield return null;
-        ResetCameras();
-        yield return null;
         StartSession();
     }
 

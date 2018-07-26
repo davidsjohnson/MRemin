@@ -70,6 +70,7 @@ public class CurrentNote : MonoBehaviour, ISubscriber<NoteMessage> {
         else if (currentNote.IsEndMessage)
         {
             noteTxt.text = string.Format("Session Complete");
+            PlayerCtrl.Control.MidiComplete();
         }
         else
         {

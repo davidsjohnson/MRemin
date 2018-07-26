@@ -30,6 +30,9 @@ public class StartButton : MonoBehaviour {
         if (string.IsNullOrEmpty(PlayerCtrl.Control.ParticipantID))
             throw new System.ArgumentException("No participant ID provided");
 
+        if (!System.Enum.IsDefined(typeof(SceneType), PlayerCtrl.Control.SceneType))
+            throw new System.ArgumentException("Invalid Training Type selection");
+
         PlayerCtrl.Control.StartVRMin();
 
         Destroy(parentCanvas);
