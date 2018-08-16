@@ -11,12 +11,16 @@ public enum SceneType
     VR = 2
 }
 
+public enum Handedness
+{
+    Right = 0,
+    Left = 1
+}
+
 public class PlayerCtrl : MonoBehaviour
 {        
     // Leaving for now. TODO: remove this at some point?
     public bool noteCtrlOn = true;
-
-    public bool vrIsFirst = true;
 
     public int minMidiNote = 36;                                // Note Range for Theremini (Configurable in Theremini settings)
     public int maxMidiNote = 72;
@@ -61,6 +65,20 @@ public class PlayerCtrl : MonoBehaviour
         set { sceneType = value; }
     }
 
+    public Handedness handed = Handedness.Right;
+    public Handedness Handed
+    {
+        get { return handed; }
+        set
+        {
+            handed = value;
+            SetInterface();
+        }
+    }
+
+    private GameObject thereminLH;
+    private GameObject thereminRH;
+
     // VRMin Components
     public static PlayerCtrl Control { get; private set; }      // Singleton Accessor
     public LogWriter Logger { get; private set; }               // Logger
@@ -86,6 +104,37 @@ public class PlayerCtrl : MonoBehaviour
 
         //Initialize Logger
         Logger = new LogWriter();
+    }
+
+    private void Start()
+    {
+        // initializes and sets the correct thermin interface for the handedness
+        initInterfaces();
+    }
+
+    private void initInterfaces()
+    {
+        // Find LH and RH Theremins and set LH to inactive
+        thereminRH = GameObject.Find("Interface-RH");
+        if (!thereminRH) { Debug.Log("No RH Interface Found"); }
+        thereminLH = GameObject.Find("Interface-LH");
+        if (!thereminLH) { Debug.Log("No LH Interface Found"); }
+
+        SetInterface();
+    }
+
+    public void SetInterface()
+    {
+        if (Handed == Handedness.Right)
+        {
+            thereminLH.SetActive(false);
+            thereminRH.SetActive(true);
+        }
+        else
+        {
+            thereminLH.SetActive(true);
+            thereminRH.SetActive(false);
+        }
     }
 
     public void StartVRMin()
@@ -123,6 +172,14 @@ public class PlayerCtrl : MonoBehaviour
             {
                 yield return null;
             }
+
+            if (sceneName == scene2D || sceneName == sceneVR)
+            {
+                initInterfaces();
+                SetInterface();
+                yield return null;
+            }
+
             if ((enableVR && !XRSettings.enabled) || (!enableVR && XRSettings.enabled))
             {
                 XRSettings.LoadDeviceByName(deviceName);
@@ -137,7 +194,11 @@ public class PlayerCtrl : MonoBehaviour
                 ResetCameras();
                 yield return null;
             }
+
+
         }
+
+
         StartSession();
     }
 
