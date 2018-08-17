@@ -217,7 +217,7 @@ public class PlayerCtrl : MonoBehaviour
     private IEnumerator DelayedStart(int delay)
     {
         NoteCtrl.Control.MidiScoreFile = MidiScoreResource;     // Set Score before delay to trigger start message
-        yield return new WaitForSecondsRealtime(delay);
+        yield return new WaitForSecondsRealtime(delay);   // add an extra 5 seconds for VR scene to load
 
         Logger.Log("StartSession\t{0}", Path.GetFileNameWithoutExtension(MidiScoreResource));
         // Start Playing notes
