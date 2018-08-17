@@ -92,8 +92,7 @@ public class PlayNote : MonoBehaviour, ISubscriber<NoteMessage> {
         int midiNote = message.NoteNumber;
 
         if (message.IsEndMessage)
-        {
-            PlayerCtrl.Control.MidiComplete();
+        { 
             yield break;
         }
             

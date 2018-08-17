@@ -27,6 +27,9 @@ public class ContinueButton : MonoBehaviour {
         if (string.IsNullOrEmpty(PlayerCtrl.Control.SessionNum))
             throw new System.ArgumentException("No Session Num provided");
 
+        if (!System.Enum.IsDefined(typeof(SceneType), PlayerCtrl.Control.SceneType))
+            throw new System.ArgumentException("Invalid Training Type selection");
+
         PlayerCtrl.Control.StartVRMin();
 
         Destroy(parentCanvas);

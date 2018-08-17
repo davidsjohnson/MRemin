@@ -3,6 +3,7 @@ using UnityEditor;
 using UnityEngine.TestTools;
 using NUnit.Framework;
 using System.Collections;
+using NAudio.Wave;
 
 public class AudioOutputTest {
 
@@ -65,5 +66,36 @@ public class AudioOutputTest {
                                      0.53228418f, 0.55757094f, 0.5810086f, 0.60251942f, 0.62203206f};
 
         AssertBuffersAreEqual(expectedBuffer440, buffer2, precisionDelta);
+    }
+
+    AsioSampleProvider test;
+
+    [SetUp]
+    public void Init()
+    {
+        test = new AsioSampleProvider("ZOOM H and F Series ASIO", AudioSettings.outputSampleRate, 2);
+    }
+
+    [TearDown]
+    public void Cleanup()
+    {
+        test.Close();
+    }
+
+    [Test]
+    public void AudioInputTest()
+    {
+        int numSamples = 100;
+        for (int i = 0; i < 10; i++)
+        {
+            float[] buffer = new float[numSamples];
+            test.Read(buffer, 0, numSamples);
+            string output = string.Format("Iteration {0}: Values - ", i);
+            for (int j=0; j< numSamples; j++)
+            {
+                output = string.Format("{0} [{1}]", output, buffer[j]);
+            }
+            Debug.Log(output);
+        }
     }
 }

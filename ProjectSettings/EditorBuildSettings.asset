@@ -6,8 +6,15 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/Scenes/VRminScene.unity
-    guid: cb752d661aabf2042b1eb702f2c2fd55
+    path: Assets/Scenes/StartScene.unity
+    guid: cd28ec757b882e2459d3cafe25374dec
   - enabled: 1
-    path: Assets/Scenes/NonVRScene.unity
-    guid: 09ef863d50e880d41bae03ec012f781e
+    path: Assets/Scenes/TwoDScene.unity
+    guid: 51a422bbc9646e14f8b8ec24d9ea48d2
+  - enabled: 1
+    path: Assets/Scenes/VRminScene.unity
+    guid: ac928b346dd55ca45948e564882ea385
+  - enabled: 1
+    path: Assets/Scenes/NoVisualsScene.unity
+    guid: 81a38000618bd624ca22f0af045e0113
+  m_configObjects: {}

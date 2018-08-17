@@ -10,7 +10,7 @@ public class ToneCtrl : MonoBehaviour {
 
     private ToneGenerator toneGenerator;
 
-    private void Awake()
+    private void Start()
     {
         toneGenerator = new ToneGenerator(NoteCtrl.Control, AudioSettings.outputSampleRate, channels);
 

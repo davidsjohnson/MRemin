@@ -36,7 +36,7 @@ public class ToneGenerator : ISubscriber<NoteMessage>, ISampleProvider
         }
     }
 
-    public SignalGenerator signalGenerator;
+    private SignalGenerator signalGenerator;
 
     private bool started = false;
 
@@ -68,13 +68,21 @@ public class ToneGenerator : ISubscriber<NoteMessage>, ISampleProvider
 
     // ISample Provider Interface
 
-    public WaveFormat WaveFormat { get; private set; }
+    public WaveFormat WaveFormat
+    {
+        get
+        {
+            return signalGenerator.WaveFormat;
+        }
+    }
+
 
     public int Read(float[] buffer, int offset, int count)
     {
         if (started)
         {
-            signalGenerator.Read(buffer, offset, count);
+            int sampleRead = signalGenerator.Read(buffer, offset, count);
+            return sampleRead;
         }
 
         return 0;

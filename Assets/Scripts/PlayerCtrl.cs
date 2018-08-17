@@ -1,15 +1,26 @@
-﻿using UnityEngine;
+﻿using System.Collections;
+using System.IO;
+using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.XR;
-using System.Collections;
-using System.IO;
+
+public enum SceneType
+{
+    NoVis = 0,
+    TwoD = 1,
+    VR = 2
+}
+
+public enum Handedness
+{
+    Right = 0,
+    Left = 1
+}
 
 public class PlayerCtrl : MonoBehaviour
 {        
     // Leaving for now. TODO: remove this at some point?
     public bool noteCtrlOn = true;
-
-    public bool vrIsFirst = true;
 
     public int minMidiNote = 36;                                // Note Range for Theremini (Configurable in Theremini settings)
     public int maxMidiNote = 72;
@@ -20,6 +31,12 @@ public class PlayerCtrl : MonoBehaviour
     public float tempo = 45;
 
     public int startDelay;                                      // How long to wait before starting system
+
+    // VR settings and Training Scenes
+    public string VRDeviceName = "WindowsMR";
+    public string sceneVR;
+    public string scene2D;
+    public string sceneNoVis;
 
     public GameObject completedMenuPrefab;                      // Menu Prefab to instantiate when a score is completed
 
@@ -40,11 +57,27 @@ public class PlayerCtrl : MonoBehaviour
             MidiIn.Start();
         }
     }
-    private bool useVRmin = true;
-    public bool UseVRmin {
-        get { return useVRmin; }
-        set { useVRmin = value; }
+
+    private SceneType sceneType = SceneType.VR;
+    public SceneType SceneType
+    {
+        get { return sceneType; }
+        set { sceneType = value; }
     }
+
+    public Handedness handed = Handedness.Right;
+    public Handedness Handed
+    {
+        get { return handed; }
+        set
+        {
+            handed = value;
+            SetInterface();
+        }
+    }
+
+    private GameObject thereminLH;
+    private GameObject thereminRH;
 
     // VRMin Components
     public static PlayerCtrl Control { get; private set; }      // Singleton Accessor
@@ -55,7 +88,6 @@ public class PlayerCtrl : MonoBehaviour
 
     void Awake ()
     {
-        XRSettings.enabled = UseVRmin;
         //Implement Psuedo-Singleton
         if (Control == null)
         {
@@ -74,66 +106,99 @@ public class PlayerCtrl : MonoBehaviour
         Logger = new LogWriter();
     }
 
-    public void StartVRMin()
+    private void Start()
     {
-        Scene activeScene = SceneManager.GetActiveScene();
-        if (!UseVRmin)
+        // initializes and sets the correct thermin interface for the handedness
+        initInterfaces();
+    }
+
+    private void initInterfaces()
+    {
+        // Find LH and RH Theremins and set LH to inactive
+        thereminRH = GameObject.Find("Interface-RH");
+        if (!thereminRH) { Debug.Log("No RH Interface Found"); }
+        thereminLH = GameObject.Find("Interface-LH");
+        if (!thereminLH) { Debug.Log("No LH Interface Found"); }
+
+        SetInterface();
+    }
+
+    public void SetInterface()
+    {
+        if (Handed == Handedness.Right)
         {
-            if (activeScene.name != "NonVRScene")
-            {
-                StartCoroutine("SwitchTo2D");
-            }
-            else
-            {
-                StartSession();
-            }
+            thereminLH.SetActive(false);
+            thereminRH.SetActive(true);
         }
         else
         {
-            if (activeScene.name != "VRminScene")
-            {
-                StartCoroutine("SwitchToVR");
-            }
-            else
-            {
-                StartSession();
-            }
+            thereminLH.SetActive(true);
+            thereminRH.SetActive(false);
+        }
+    }
+
+    public void StartVRMin()
+    {
+        switch (sceneType)
+        {
+            case SceneType.NoVis:
+                StartCoroutine(SwitchScene(sceneNoVis, ""));
+                break;
+            case SceneType.TwoD:
+                StartCoroutine(SwitchScene(scene2D, ""));
+                break;
+            case SceneType.VR:
+                StartCoroutine(SwitchScene(sceneVR, VRDeviceName));
+                break;
         }
     }
 
     private void StartSession()
     {
-        Logger.Start(string.Format("p{0}-session{1}-score{2}-VR", ParticipantID, SessionNum, Path.GetFileNameWithoutExtension(MidiScoreResource)));      // Start Up the Logger
+        Logger.Start(string.Format("p{0}-session{1}-score{2}-scene{3}", ParticipantID, SessionNum, Path.GetFileNameWithoutExtension(MidiScoreResource), SceneType));      // Start Up the Logger
         StartCoroutine(DelayedStart(startDelay));   // Start Notes on a Delay
     }
 
-    private IEnumerator SwitchTo2D()
+    private IEnumerator SwitchScene(string sceneName, string deviceName)
     {
-        var asyncLoad = SceneManager.LoadSceneAsync("NonVRScene");
-        while (!asyncLoad.isDone)
-        {
-            yield return null;
-        }
-        XRSettings.LoadDeviceByName("");
-        yield return null;
-        XRSettings.enabled = false;
-        yield return null;
-        StartSession();
-    }
+        Scene activeScene = SceneManager.GetActiveScene();
+        bool enableVR = !string.IsNullOrEmpty(deviceName);
 
-    private IEnumerator SwitchToVR()
-    {
-        var asyncLoad = SceneManager.LoadSceneAsync("VRminScene");
-        while (!asyncLoad.isDone)
+        // Only change scenes if we're not already in that scene
+        if (activeScene.name != sceneName)
         {
-            yield return null;
+            var asyncLoad = SceneManager.LoadSceneAsync(sceneName);
+            while (!asyncLoad.isDone)
+            {
+                yield return null;
+            }
+
+            if (sceneName == scene2D || sceneName == sceneVR)
+            {
+                initInterfaces();
+                SetInterface();
+                yield return null;
+            }
+
+            if ((enableVR && !XRSettings.enabled) || (!enableVR && XRSettings.enabled))
+            {
+                XRSettings.LoadDeviceByName(deviceName);
+                yield return null;
+                XRSettings.enabled = enableVR;
+                yield return null;
+            }
+
+            // We should only reset camera positions if using VR (Non VR have specific camera locations)
+            if (XRSettings.enabled)
+            {
+                ResetCameras();
+                yield return null;
+            }
+
+
         }
-        XRSettings.LoadDeviceByName("WindowsMR");
-        yield return null;
-        XRSettings.enabled = true;
-        yield return null;
-        ResetCameras();
-        yield return null;
+
+
         StartSession();
     }
 
@@ -152,7 +217,7 @@ public class PlayerCtrl : MonoBehaviour
     private IEnumerator DelayedStart(int delay)
     {
         NoteCtrl.Control.MidiScoreFile = MidiScoreResource;     // Set Score before delay to trigger start message
-        yield return new WaitForSecondsRealtime(delay);
+        yield return new WaitForSecondsRealtime(delay);   // add an extra 5 seconds for VR scene to load
 
         Logger.Log("StartSession\t{0}", Path.GetFileNameWithoutExtension(MidiScoreResource));
         // Start Playing notes

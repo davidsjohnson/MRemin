@@ -16,8 +16,7 @@ public class ScoreDropdown : MonoBehaviour {
 
 	void Start ()
     {
-        scorePath = PlayerCtrl.Control.vrIsFirst ? "C:\\Users\\david\\Documents\\projects\\VRmin-UserStudy\\Scores\\VR-First" :
-                                                   "C:\\Users\\david\\Documents\\projects\\VRmin-UserStudy\\Scores\\Non-First";
+        scorePath = "C:\\Users\\david\\Documents\\projects\\VRmin-UserStudy\\Scores\\";
 
         // Setup dropdown menu options and change handler
         dropdown = GetComponent<Dropdown>();
