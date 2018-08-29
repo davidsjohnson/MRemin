@@ -3841,9 +3841,9 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1892643461945114}
-  m_LocalRotation: {x: -0.0035091587, y: -0.014833866, z: 0.1986176, w: 0.97995853}
-  m_LocalPosition: {x: -0.0035987843, y: 0.006002304, z: 0.0000005126931}
-  m_LocalScale: {x: 0.0053783692, y: 0.00553, z: 0.03000001}
+  m_LocalRotation: {x: -0.003509352, y: -0.0148335975, z: 0.19861765, w: 0.97995853}
+  m_LocalPosition: {x: -0.0029901336, y: 0.006204565, z: 0.00000029918738}
+  m_LocalScale: {x: 0.003159, y: 0.00553, z: 0.03000001}
   m_Children: []
   m_Father: {fileID: 4154002708290088}
   m_RootOrder: 0
@@ -3869,7 +3869,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1443927189261608}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.275, y: 0.0139, z: -0}
+  m_LocalPosition: {x: -0.144, y: 0.014, z: -0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 4953617948393078}
@@ -5682,7 +5682,7 @@ MeshRenderer:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1892643461945114}
-  m_Enabled: 1
+  m_Enabled: 0
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
@@ -5717,7 +5717,7 @@ MeshRenderer:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1286051073395210}
-  m_Enabled: 1
+  m_Enabled: 0
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
@@ -6206,8 +6206,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2cc9e5fe42c3c9649bd8c796f72d269f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  minPosition: 0.02
-  maxPosition: -0.275
+  minPosition: 0.0185
+  maxPosition: -0.145
 --- !u!114 &114435662204231756
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -6263,7 +6263,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   minPosition: 0
-  maxPosition: 0.175
+  maxPosition: 0.075
 --- !u!114 &114633100881694674
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -6386,7 +6386,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   minSize: 3
-  maxSize: 33.5
+  maxSize: 20
   changeSteps: 20
   resizeTime: 0.5
   playedMaterial: {fileID: 2100000, guid: ad746ca1b112142f39d9ea0187784ee9, type: 2}

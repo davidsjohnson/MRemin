@@ -144,7 +144,7 @@ GameObject:
   - component: {fileID: 222259081215740386}
   - component: {fileID: 114975561876910410}
   - component: {fileID: 114796641267709676}
-  - component: {fileID: 114274424180612270}
+  - component: {fileID: 114928278367831480}
   m_Layer: 5
   m_Name: SceneTypeDropdown
   m_TagString: Untagged
@@ -1117,17 +1117,6 @@ MonoBehaviour:
   m_FillAmount: 1
   m_FillClockwise: 1
   m_FillOrigin: 0
---- !u!114 &114274424180612270
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1176621510525478}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5ba365e68a95fea459dcee443c0888df, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &114319865628587468
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1867,7 +1856,7 @@ MonoBehaviour:
       m_Image: {fileID: 0}
     - m_Text: 2D
       m_Image: {fileID: 0}
-    - m_Text: VR
+    - m_Text: VR (Switch Audio)
       m_Image: {fileID: 0}
   m_OnValueChanged:
     m_PersistentCalls:
@@ -2181,6 +2170,17 @@ MonoBehaviour:
   m_FillAmount: 1
   m_FillClockwise: 1
   m_FillOrigin: 0
+--- !u!114 &114928278367831480
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1176621510525478}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fd257ad16e3cff649b8d6ff04fde304b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &114939919437162032
 MonoBehaviour:
   m_ObjectHideFlags: 1

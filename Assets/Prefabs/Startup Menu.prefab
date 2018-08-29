@@ -92,7 +92,7 @@ GameObject:
   - component: {fileID: 222722235554785894}
   - component: {fileID: 114051260612138860}
   - component: {fileID: 114140528615509712}
-  - component: {fileID: 114145465243832474}
+  - component: {fileID: 114849052618035044}
   m_Layer: 5
   m_Name: SceneTypeDropdown
   m_TagString: Untagged
@@ -895,7 +895,7 @@ GameObject:
   - component: {fileID: 222890815686112146}
   - component: {fileID: 114096321240156446}
   - component: {fileID: 114135587558089674}
-  - component: {fileID: 114725455994946708}
+  - component: {fileID: 114498355882592984}
   m_Layer: 5
   m_Name: Handedness
   m_TagString: Untagged
@@ -1612,7 +1612,7 @@ MonoBehaviour:
       m_Image: {fileID: 0}
     - m_Text: 2D
       m_Image: {fileID: 0}
-    - m_Text: VR
+    - m_Text: VR (Switch Audio)
       m_Image: {fileID: 0}
   m_OnValueChanged:
     m_PersistentCalls:
@@ -1683,17 +1683,6 @@ MonoBehaviour:
       m_Calls: []
     m_TypeName: UnityEngine.UI.ScrollRect+ScrollRectEvent, UnityEngine.UI, Version=1.0.0.0,
       Culture=neutral, PublicKeyToken=null
---- !u!114 &114145465243832474
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1031361390729504}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5ba365e68a95fea459dcee443c0888df, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &114173704441266426
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -2510,6 +2499,17 @@ MonoBehaviour:
   m_FillAmount: 1
   m_FillClockwise: 1
   m_FillOrigin: 0
+--- !u!114 &114498355882592984
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1750352461280144}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2e3704eb2b13793469421cda9cd8faac, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &114506994482700404
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -2762,8 +2762,8 @@ MonoBehaviour:
     m_Alignment: 3
     m_AlignByGeometry: 0
     m_RichText: 1
-    m_HorizontalOverflow: 0
-    m_VerticalOverflow: 0
+    m_HorizontalOverflow: 1
+    m_VerticalOverflow: 1
     m_LineSpacing: 1
   m_Text: Option A
 --- !u!114 &114568755272972694
@@ -2994,8 +2994,8 @@ MonoBehaviour:
     m_Alignment: 3
     m_AlignByGeometry: 0
     m_RichText: 1
-    m_HorizontalOverflow: 0
-    m_VerticalOverflow: 0
+    m_HorizontalOverflow: 1
+    m_VerticalOverflow: 1
     m_LineSpacing: 1
   m_Text: Select Score...
 --- !u!114 &114672968417265152
@@ -3145,17 +3145,6 @@ MonoBehaviour:
   m_FillAmount: 1
   m_FillClockwise: 1
   m_FillOrigin: 0
---- !u!114 &114725455994946708
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1750352461280144}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 712cb209c91b6e941ae324f9a094162c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &114727849252734622
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -3558,6 +3547,17 @@ MonoBehaviour:
   m_CaretBlinkRate: 0.85
   m_CaretWidth: 1
   m_ReadOnly: 0
+--- !u!114 &114849052618035044
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1031361390729504}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fd257ad16e3cff649b8d6ff04fde304b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &114858025573852970
 MonoBehaviour:
   m_ObjectHideFlags: 1

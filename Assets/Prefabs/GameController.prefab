@@ -21,8 +21,8 @@ GameObject:
   - component: {fileID: 4925189710752212}
   - component: {fileID: 114347265354093928}
   - component: {fileID: 82120553536213706}
+  - component: {fileID: 114988376810076574}
   - component: {fileID: 114520756219907214}
-  - component: {fileID: 114910755617702178}
   - component: {fileID: 114154820503330330}
   m_Layer: 0
   m_Name: GameController
@@ -38,7 +38,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1328757007108868}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.43199998, y: 1.4445, z: -0.434}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -52,7 +52,8 @@ AudioSource:
   m_GameObject: {fileID: 1328757007108868}
   m_Enabled: 1
   serializedVersion: 4
-  OutputAudioMixerGroup: {fileID: 0}
+  OutputAudioMixerGroup: {fileID: 243883750430360446, guid: 486bb9aa8cef352419db374dce0d9cc0,
+    type: 2}
   m_audioClip: {fileID: 0}
   m_PlayOnAwake: 1
   m_Volume: 1
@@ -162,19 +163,19 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   noteCtrlOn: 1
-  vrIsFirst: 1
   minMidiNote: 36
   maxMidiNote: 72
   pitchMidiChannel: 20
   volMidiChannel: 2
-  tempo: 100
+  tempo: 30
   startDelay: 10
   VRDeviceName: WindowsMR
-  sceneVR: 
-  scene2D: 
-  sceneNoVis: 
+  sceneVR: VRminScene
+  scene2D: TwoDScene
+  sceneNoVis: NoVisualsScene
   completedMenuPrefab: {fileID: 1389134157721864, guid: 9dc1243d6cfe3ae4da2712f0b7161152,
     type: 2}
+  handed: 0
 --- !u!114 &114520756219907214
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -186,7 +187,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cda5b548575019e48a15750e81389617, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &114910755617702178
+--- !u!114 &114988376810076574
 MonoBehaviour:
   m_ObjectHideFlags: 1
   m_CorrespondingSourceObject: {fileID: 0}
@@ -194,7 +195,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 1328757007108868}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f6e6c3e13297d47459d9edea0c8cdc80, type: 3}
+  m_Script: {fileID: 11500000, guid: 3bb95a499e78779478ef5c53a170d891, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   channels: 2

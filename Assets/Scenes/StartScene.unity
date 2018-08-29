@@ -44,7 +44,7 @@ RenderSettings:
 LightmapSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 11
-  m_GIWorkflowMode: 0
+  m_GIWorkflowMode: 1
   m_GISettings:
     serializedVersion: 2
     m_BounceScale: 1
@@ -215,12 +215,18 @@ Prefab:
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 3aa49e6f06fd6144c9e7f9c59188a148, type: 2}
   m_IsPrefabAsset: 0
+--- !u!114 &529588258 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 114428296528799074, guid: 99bff7df4fc612443a6fb29cde9e9654,
+    type: 2}
+  m_PrefabInternal: {fileID: 2075229815}
+  m_Script: {fileID: 11500000, guid: 06f339320e6794c8c9a16b9975d7e8d3, type: 3}
 --- !u!1 &615569534 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 1493965172262900, guid: d29bc40b7f3df26479d6a0aac211c355,
     type: 2}
   m_PrefabInternal: {fileID: 906645915}
---- !u!1001 &683911770
+--- !u!1001 &702303455
 Prefab:
   m_ObjectHideFlags: 0
   serializedVersion: 2
@@ -258,41 +264,6 @@ Prefab:
     - target: {fileID: 4925189710752212, guid: 2c062b7ee6e3e604b869de6f9f00280d, type: 2}
       propertyPath: m_RootOrder
       value: 4
-      objectReference: {fileID: 0}
-    - target: {fileID: 114347265354093928, guid: 2c062b7ee6e3e604b869de6f9f00280d,
-        type: 2}
-      propertyPath: sceneVR
-      value: VRminScene
-      objectReference: {fileID: 0}
-    - target: {fileID: 114347265354093928, guid: 2c062b7ee6e3e604b869de6f9f00280d,
-        type: 2}
-      propertyPath: scene2D
-      value: TwoDScene
-      objectReference: {fileID: 0}
-    - target: {fileID: 114347265354093928, guid: 2c062b7ee6e3e604b869de6f9f00280d,
-        type: 2}
-      propertyPath: sceneNoVis
-      value: NoVisualsScene
-      objectReference: {fileID: 0}
-    - target: {fileID: 114347265354093928, guid: 2c062b7ee6e3e604b869de6f9f00280d,
-        type: 2}
-      propertyPath: tempo
-      value: 30
-      objectReference: {fileID: 0}
-    - target: {fileID: 1328757007108868, guid: 2c062b7ee6e3e604b869de6f9f00280d, type: 2}
-      propertyPath: m_IsActive
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 82120553536213706, guid: 2c062b7ee6e3e604b869de6f9f00280d,
-        type: 2}
-      propertyPath: OutputAudioMixerGroup
-      value: 
-      objectReference: {fileID: 243883750430360446, guid: 486bb9aa8cef352419db374dce0d9cc0,
-        type: 2}
-    - target: {fileID: 114347265354093928, guid: 2c062b7ee6e3e604b869de6f9f00280d,
-        type: 2}
-      propertyPath: startDelay
-      value: 10
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 2c062b7ee6e3e604b869de6f9f00280d, type: 2}
@@ -393,26 +364,6 @@ Prefab:
         type: 2}
       propertyPath: m_Pivot.y
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 114646097848129514, guid: 8b457993845e8174b9aedad34e436945,
-        type: 2}
-      propertyPath: m_FontData.m_VerticalOverflow
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 114646097848129514, guid: 8b457993845e8174b9aedad34e436945,
-        type: 2}
-      propertyPath: m_FontData.m_HorizontalOverflow
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 114562853126979388, guid: 8b457993845e8174b9aedad34e436945,
-        type: 2}
-      propertyPath: m_FontData.m_HorizontalOverflow
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 114562853126979388, guid: 8b457993845e8174b9aedad34e436945,
-        type: 2}
-      propertyPath: m_FontData.m_VerticalOverflow
-      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 8b457993845e8174b9aedad34e436945, type: 2}
@@ -899,7 +850,7 @@ Prefab:
     - target: {fileID: 114457508988133852, guid: f0ec8892316ad2a41a700433cf7e3cf2,
         type: 2}
       propertyPath: m_OnEndEdit.m_PersistentCalls.m_Calls.Array.size
-      value: 1
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 224285484460309998, guid: f0ec8892316ad2a41a700433cf7e3cf2,
         type: 2}
@@ -1034,7 +985,7 @@ Prefab:
         type: 2}
       propertyPath: m_OnEndEdit.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
-      objectReference: {fileID: 0}
+      objectReference: {fileID: 1451378014}
     - target: {fileID: 114457508988133852, guid: f0ec8892316ad2a41a700433cf7e3cf2,
         type: 2}
       propertyPath: m_OnEndEdit.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
@@ -1049,7 +1000,7 @@ Prefab:
         type: 2}
       propertyPath: m_OnEndEdit.m_PersistentCalls.m_Calls.Array.data[1].m_Target
       value: 
-      objectReference: {fileID: 0}
+      objectReference: {fileID: 529588258}
     - target: {fileID: 114649865256176206, guid: f0ec8892316ad2a41a700433cf7e3cf2,
         type: 2}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
@@ -1098,6 +1049,12 @@ Prefab:
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: f0ec8892316ad2a41a700433cf7e3cf2, type: 2}
   m_IsPrefabAsset: 0
+--- !u!114 &1451378014 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 114929731475973544, guid: 3aa49e6f06fd6144c9e7f9c59188a148,
+    type: 2}
+  m_PrefabInternal: {fileID: 74414091}
+  m_Script: {fileID: 11500000, guid: 06f339320e6794c8c9a16b9975d7e8d3, type: 3}
 --- !u!1001 &2075229815
 Prefab:
   m_ObjectHideFlags: 0
@@ -1142,6 +1099,10 @@ Prefab:
       propertyPath: m_Mesh
       value: 
       objectReference: {fileID: 927251431}
+    - target: {fileID: 1670501252638118, guid: 99bff7df4fc612443a6fb29cde9e9654, type: 2}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 99bff7df4fc612443a6fb29cde9e9654, type: 2}
   m_IsPrefabAsset: 0
